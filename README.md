@@ -1,5 +1,5 @@
 # ProyectoFinalCiencias1
-Motor/Gestor de Bases de Datos con Árboles Autobalanceados
+## Motor/Gestor de Bases de Datos con Árboles Autobalanceados
 Objetivo Desarrollar un motor/gestor de bases de datos (relacional o no relacional a elección) que soporte comandos básicos de definición y manipulación de datos (crear/borrar tablas/espacios, insertar, actualizar, borrar, buscar) y utilice una estructura de árbol autobalanceado (AVL o Rojo‑Negro) para indexación/almacenamiento y búsqueda eficiente. La solución debe ser ejecutable y defendida presencialmente.
 
 # Requisitos funcionales obligatorios
@@ -8,15 +8,15 @@ Comandos para crear y borrar "espacios" de almacenamiento (tablas/colecciones/en
 Definición simple de esquema: nombre de espacio + lista de campos con tipos básicos (entero, texto, real, boolean).
 Soportar espacios sin esquema fijo si el grupo elige enfoque no relacional.
 Operaciones CRUD básicas
-INSERT: insertar registros en un espacio.
-SELECT / FIND: buscar registros por clave primaria y por consultas simples (igualdad y rango sobre campos indexados).
-UPDATE: actualizar uno o varios registros que cumplan criterio.
-DELETE: eliminar registros por clave o por condición.
-Índice basado en árbol autobalanceado
-Implementar internamente un árbol autobalanceado (elección: AVL o Rojo‑Negro) para indexar por la clave primaria y/o por otros campos indexados.
-Operaciones del árbol: inserción, búsqueda, eliminación y recorrido (inorder).
-Garantizar complejidad O(log n) en operaciones sobre el índice.
-Persistencia
+## INSERT: insertar registros en un espacio.
+## SELECT / FIND: buscar registros por clave primaria y por consultas simples (igualdad y rango sobre campos indexados).
+## UPDATE: actualizar uno o varios registros que cumplan criterio.
+## DELETE: eliminar registros por clave o por condición.
+## Índice basado en árbol autobalanceado
+## Implementar internamente un árbol autobalanceado (elección: AVL o Rojo‑Negro) para indexar por la clave primaria y/o por otros campos indexados.
+## Operaciones del árbol: inserción, búsqueda, eliminación y recorrido (inorder).
+## Garantizar complejidad O(log n) en operaciones sobre el índice.
+## Persistencia
 Datos persistidos en archivos (formatos permitidos: JSON, CSV, binario simple); el estado del espacio debe poder restaurarse al reiniciar el gestor.
 El índice también debe persistirse o reconstruirse rápidamente desde los archivos de datos al iniciar.
 Interfaz de uso
