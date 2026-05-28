@@ -220,4 +220,13 @@ public class GestorPersistencia {
 
         return celdas;
     }
+
+    /**
+     * Elimina físicamente el archivo CSV de una tabla del disco.
+     */
+    public synchronized void eliminarTablaFisica(String nombreTabla) throws IOException {
+        String nombreArchivoFinal = nombreTabla.toLowerCase() + ".csv";
+        Path rutaFinal = Paths.get(directorioDatos, nombreArchivoFinal);
+        Files.deleteIfExists(rutaFinal);
+    }
 }
