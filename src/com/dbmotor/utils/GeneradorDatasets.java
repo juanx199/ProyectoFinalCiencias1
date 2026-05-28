@@ -4,33 +4,34 @@ import com.dbmotor.model.Registro;
 import com.dbmotor.model.Tabla;
 import com.dbmotor.model.TipoDato;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 /**
  * Generador automatizado de conjuntos de datos y herramientas de benchmarking.
- * Genera datasets pequeños para depuración y datasets medianos para probar la eficiencia logarítmica.
+ * Genera datasets pequeños para depuración y datasets medianos para probar la
+ * eficiencia logarítmica.
  */
 public class GeneradorDatasets {
     private static final Random random = new Random(12345); // Semilla para consistencia
 
     private static final String[] NOMBRES = {
-        "Juan", "Maria", "Carlos", "Sofia", "Pedro", "Ana", "Luis", "Elena", "Andres", "Clara",
-        "Jose", "Laura", "Diego", "Lucia", "Manuel", "Isabel", "Javier", "Carmen", "Francisco", "Marta"
+            "Juan", "Maria", "Carlos", "Sofia", "Pedro", "Ana", "Luis", "Elena", "Andres", "Clara",
+            "Jose", "Laura", "Diego", "Lucia", "Manuel", "Isabel", "Javier", "Carmen", "Francisco", "Marta"
     };
-    
+
     private static final String[] APELLIDOS = {
-        "Gomez", "Rodriguez", "Fernandez", "Lopez", "Diaz", "Martinez", "Perez", "Garcia", "Sanchez", "Romero",
-        "Torres", "Ruiz", "Ramirez", "Flores", "Acosta", "Benitez", "Medina", "Herrera", "Suarez", "Gimenez"
+            "Gomez", "Rodriguez", "Fernandez", "Lopez", "Diaz", "Martinez", "Perez", "Garcia", "Sanchez", "Romero",
+            "Torres", "Ruiz", "Ramirez", "Flores", "Acosta", "Benitez", "Medina", "Herrera", "Suarez", "Gimenez"
     };
 
     /**
-     * Genera e inserta una cantidad específica de registros aleatorios válidos en la tabla.
+     * Genera e inserta una cantidad específica de registros aleatorios válidos en
+     * la tabla.
      */
     public static void generarEInsertar(Tabla tabla, int cantidad) {
         String pkCol = tabla.getClavePrimaria();
-        
+
         for (int i = 0; i < cantidad; i++) {
             // Generar clave primaria entera única
             int id = random.nextInt(cantidad * 20);
@@ -51,7 +52,8 @@ public class GeneradorDatasets {
                         registro.set(colName, random.nextInt(100));
                         break;
                     case TEXT:
-                        String nombreCompleto = NOMBRES[random.nextInt(NOMBRES.length)] + " " + APELLIDOS[random.nextInt(APELLIDOS.length)];
+                        String nombreCompleto = NOMBRES[random.nextInt(NOMBRES.length)] + " "
+                                + APELLIDOS[random.nextInt(APELLIDOS.length)];
                         registro.set(colName, nombreCompleto);
                         break;
                     case REAL:
@@ -74,7 +76,8 @@ public class GeneradorDatasets {
     }
 
     /**
-     * Ejecuta una prueba de benchmarking para medir la eficiencia de búsqueda indexada (AVL)
+     * Ejecuta una prueba de benchmarking para medir la eficiencia de búsqueda
+     * indexada (AVL)
      * en comparación con la búsqueda secuencial lineal.
      * Realiza 1,000 búsquedas aleatorias y devuelve un reporte en texto.
      */
@@ -86,7 +89,7 @@ public class GeneradorDatasets {
 
         int cantidadBusquedas = 1000;
         int nRegistros = todos.size();
-        
+
         // Seleccionar 1,000 claves que sabemos que existen para buscar
         int[] clavesABuscar = new int[cantidadBusquedas];
         for (int i = 0; i < cantidadBusquedas; i++) {
@@ -126,7 +129,7 @@ public class GeneradorDatasets {
         // 3. Generar estadísticas legibles
         double tiempoTotalAVLMilis = endAVL / 1_000_000.0;
         double tiempoTotalSecMilis = endSec / 1_000_000.0;
-        
+
         double avgAVLNanos = (double) endAVL / cantidadBusquedas;
         double avgSecNanos = (double) endSec / cantidadBusquedas;
 
@@ -139,10 +142,13 @@ public class GeneradorDatasets {
         sb.append(String.format("| Registros en la Tabla: %-49d|\n", nRegistros));
         sb.append(String.format("| Búsquedas Ejecutadas : %-49d|\n", cantidadBusquedas));
         sb.append("+-------------------------------------------------------------------------+\n");
-        sb.append(String.format("| 🚀 ÍNDICE AVL (O(log N))  | Tiempo Total: %8.3f ms | Promedio: %7.1f ns |\n", tiempoTotalAVLMilis, avgAVLNanos));
-        sb.append(String.format("| 🐌 LINEAL SCAN (O(N))     | Tiempo Total: %8.3f ms | Promedio: %7.1f ns |\n", tiempoTotalSecMilis, avgSecNanos));
+        sb.append(String.format("| 🚀 ÍNDICE AVL (O(log N))  | Tiempo Total: %8.3f ms | Promedio: %7.1f ns |\n",
+                tiempoTotalAVLMilis, avgAVLNanos));
+        sb.append(String.format("| 🐌 LINEAL SCAN (O(N))     | Tiempo Total: %8.3f ms | Promedio: %7.1f ns |\n",
+                tiempoTotalSecMilis, avgSecNanos));
         sb.append("+-------------------------------------------------------------------------+\n");
-        sb.append(String.format("| 🔥 EL ÁRBOL AVL ES %.1f VECES MÁS RÁPIDO QUE EL ESCANEO LINEAL.        |\n", factorMejora));
+        sb.append(String.format("| 🔥 EL ÁRBOL AVL ES %.1f VECES MÁS RÁPIDO QUE EL ESCANEO LINEAL.        |\n",
+                factorMejora));
         sb.append("+-------------------------------------------------------------------------+\n");
 
         return sb.toString();

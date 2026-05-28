@@ -11,7 +11,6 @@ import com.dbmotor.parser.InterpreteREPL;
 import com.dbmotor.storage.GestorPersistencia;
 import com.dbmotor.utils.GeneradorDatasets;
 
-
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
@@ -22,9 +21,8 @@ import java.io.PrintStream;
 import java.util.LinkedHashMap;
 import java.util.Random;
 
-/**
- * Ventana Principal Swing que actúa como panel de control interactivo del motor relacional AVL.
- */
+// Ventana Principal Swing que actúa como panel de control interactivo del motor relacional AVL.
+
 public class VentanaPrincipal extends JFrame {
     private final BaseDatos db;
     private final GestorPersistencia pers;
@@ -65,7 +63,7 @@ public class VentanaPrincipal extends JFrame {
         JLabel labelTabla = new JLabel("Tabla Activa (Índice AVL):");
         labelTabla.setForeground(Color.WHITE);
         labelTabla.setFont(new Font("SansSerif", Font.BOLD, 12));
-        
+
         comboTablas = new JComboBox<>();
         comboTablas.setPreferredSize(new Dimension(180, 26));
         comboTablas.addActionListener(e -> seleccionarTablaActiva());
@@ -79,7 +77,8 @@ public class VentanaPrincipal extends JFrame {
         panelSuperior.add(labelEstadisticas);
         add(panelSuperior, BorderLayout.NORTH);
 
-        // 2. Panel Central (SplitPane: Izquierda = Visualizador, Derecha = Controles y Terminal)
+        // 2. Panel Central (SplitPane: Izquierda = Visualizador, Derecha = Controles y
+        // Terminal)
         JSplitPane splitPrincipal = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         splitPrincipal.setDividerLocation(650);
         splitPrincipal.setResizeWeight(0.6);
@@ -90,11 +89,11 @@ public class VentanaPrincipal extends JFrame {
                 BorderFactory.createLineBorder(new Color(51, 65, 85)),
                 "Topología Dinámica del Índice AVL (Clave Primaria)",
                 TitledBorder.LEADING, TitledBorder.TOP,
-                new Font("SansSerif", Font.BOLD, 12), Color.WHITE
-        ));
+                new Font("SansSerif", Font.BOLD, 12), Color.WHITE));
         splitPrincipal.setLeftComponent(panelVisualizador);
 
-        // Subpanel Derecho: Dividido verticalmente (Arriba = Atajos, Abajo = Terminal CLI)
+        // Subpanel Derecho: Dividido verticalmente (Arriba = Atajos, Abajo = Terminal
+        // CLI)
         JPanel panelDerecho = new JPanel(new BorderLayout());
 
         // Atajos Rápidos
@@ -103,8 +102,7 @@ public class VentanaPrincipal extends JFrame {
                 BorderFactory.createLineBorder(new Color(226, 232, 240)),
                 "Atajos y Generadores",
                 TitledBorder.LEADING, TitledBorder.TOP,
-                new Font("SansSerif", Font.BOLD, 11), new Color(15, 23, 42)
-        ));
+                new Font("SansSerif", Font.BOLD, 11), new Color(15, 23, 42)));
         panelAtajos.setBackground(new Color(241, 245, 249)); // Slate 100
 
         JButton btnCrear = new JButton("1. Inicializar Tabla 'usuarios'");
@@ -148,8 +146,7 @@ public class VentanaPrincipal extends JFrame {
                 BorderFactory.createLineBorder(new Color(51, 65, 85)),
                 "Consola Terminal SQL Integrada",
                 TitledBorder.LEADING, TitledBorder.TOP,
-                new Font("SansSerif", Font.BOLD, 12), Color.WHITE
-        ));
+                new Font("SansSerif", Font.BOLD, 12), Color.WHITE));
         panelTerminal.setBackground(new Color(15, 23, 42)); // Slate 900
 
         terminalOutput = new JTextArea();
@@ -161,7 +158,7 @@ public class VentanaPrincipal extends JFrame {
 
         JPanel panelInput = new JPanel(new BorderLayout());
         panelInput.setBackground(Color.BLACK);
-        
+
         JLabel promptLabel = new JLabel("  sql> ");
         promptLabel.setForeground(new Color(34, 197, 94));
         promptLabel.setFont(new Font("Courier New", Font.BOLD, 12));
@@ -230,7 +227,8 @@ public class VentanaPrincipal extends JFrame {
         int size = tablaActiva.obtenerTodos().size();
         int height = (tablaActiva.getIndice().getRoot() != null) ? tablaActiva.getIndice().getRoot().height : 0;
         boolean balance = tablaActiva.getIndice().verifyBalance();
-        labelEstadisticas.setText("Registros: " + size + " | Altura: " + height + " | Autobalanceado AVL: " + (balance ? "SÍ (OK)" : "ERROR"));
+        labelEstadisticas.setText("Registros: " + size + " | Altura: " + height + " | Autobalanceado AVL: "
+                + (balance ? "SÍ (OK)" : "ERROR"));
     }
 
     private void actualizarVisualizacion() {
@@ -258,7 +256,8 @@ public class VentanaPrincipal extends JFrame {
 
     private void insertarRegistroAleatorio() {
         if (tablaActiva == null) {
-            JOptionPane.showMessageDialog(this, "Por favor, crea o selecciona una tabla primero.", "Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Por favor, crea o selecciona una tabla primero.", "Error",
+                    JOptionPane.WARNING_MESSAGE);
             return;
         }
 
@@ -269,14 +268,15 @@ public class VentanaPrincipal extends JFrame {
             id = random.nextInt(1000);
         }
 
-        String[] nombres = {"Juan", "Maria", "Carlos", "Sofia", "Pedro", "Ana", "Luis", "Elena", "Andres", "Clara"};
+        String[] nombres = { "Juan", "Maria", "Carlos", "Sofia", "Pedro", "Ana", "Luis", "Elena", "Andres", "Clara" };
         String nombre = nombres[random.nextInt(nombres.length)] + " " + (char) ('A' + random.nextInt(26)) + ".";
         double saldo = Math.round((10 + random.nextDouble() * 1000) * 100.0) / 100.0;
         boolean activo = random.nextBoolean();
 
         String query;
         if (tablaActiva.getNombre().equalsIgnoreCase("usuarios")) {
-            query = String.format("INSERT INTO %s VALUES (%d, '%s', %.2f, %b);", tablaActiva.getNombre(), id, nombre, saldo, activo);
+            query = String.format("INSERT INTO %s VALUES (%d, '%s', %.2f, %b);", tablaActiva.getNombre(), id, nombre,
+                    saldo, activo);
         } else {
             // Generalización para cualquier otra tabla creada por CLI
             StringBuilder queryB = new StringBuilder("INSERT INTO " + tablaActiva.getNombre() + " VALUES (" + id);
@@ -311,33 +311,43 @@ public class VentanaPrincipal extends JFrame {
     }
 
     private void eliminarRegistroDialogo() {
-        if (tablaActiva == null) return;
-        String val = JOptionPane.showInputDialog(this, "Ingrese la clave primaria (ID entero) del registro a eliminar:");
-        if (val == null || val.trim().isEmpty()) return;
+        if (tablaActiva == null)
+            return;
+        String val = JOptionPane.showInputDialog(this,
+                "Ingrese la clave primaria (ID entero) del registro a eliminar:");
+        if (val == null || val.trim().isEmpty())
+            return;
 
         try {
             int key = Integer.parseInt(val.trim());
-            String query = "DELETE FROM " + tablaActiva.getNombre() + " WHERE " + tablaActiva.getClavePrimaria() + " = " + key + ";";
+            String query = "DELETE FROM " + tablaActiva.getNombre() + " WHERE " + tablaActiva.getClavePrimaria() + " = "
+                    + key + ";";
             ResultadoQuery res = parser.ejecutar(query);
             terminalOutput.append("✔️ " + res.getMensaje() + "\n");
             actualizarVisualizacion();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error al Eliminar", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error al Eliminar",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void buscarRegistroDialogo() {
-        if (tablaActiva == null) return;
-        String val = JOptionPane.showInputDialog(this, "Ingrese el ID del registro a buscar (Exacto o Rango separado por coma min,max):");
-        if (val == null || val.trim().isEmpty()) return;
+        if (tablaActiva == null)
+            return;
+        String val = JOptionPane.showInputDialog(this,
+                "Ingrese el ID del registro a buscar (Exacto o Rango separado por coma min,max):");
+        if (val == null || val.trim().isEmpty())
+            return;
 
         try {
             String query;
             if (val.contains(",")) {
                 String[] rango = val.split(",");
-                query = "SELECT * FROM " + tablaActiva.getNombre() + " WHERE " + tablaActiva.getClavePrimaria() + " BETWEEN " + rango[0].trim() + " AND " + rango[1].trim() + ";";
+                query = "SELECT * FROM " + tablaActiva.getNombre() + " WHERE " + tablaActiva.getClavePrimaria()
+                        + " BETWEEN " + rango[0].trim() + " AND " + rango[1].trim() + ";";
             } else {
-                query = "SELECT * FROM " + tablaActiva.getNombre() + " WHERE " + tablaActiva.getClavePrimaria() + " = " + val.trim() + ";";
+                query = "SELECT * FROM " + tablaActiva.getNombre() + " WHERE " + tablaActiva.getClavePrimaria() + " = "
+                        + val.trim() + ";";
             }
 
             long start = System.nanoTime();
@@ -345,23 +355,24 @@ public class VentanaPrincipal extends JFrame {
             long elapsed = System.nanoTime() - start;
 
             terminalOutput.append("✔️ Ejecutado: " + query + "\n");
-            
+
             // Capturar la impresión ASCII redirigiéndola a la terminal gráfica!
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             PrintStream ps = new PrintStream(baos);
             PrintStream viejo = System.out;
             System.setOut(ps);
-            
+
             InterpreteREPL.imprimirResultado(res, elapsed);
-            
+
             System.out.flush();
             System.setOut(viejo);
-            
+
             terminalOutput.append(baos.toString());
             terminalOutput.append("\n");
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al buscar: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error al buscar: " + e.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -370,18 +381,19 @@ public class VentanaPrincipal extends JFrame {
             // Inicializar por defecto
             crearTablaDefecto();
         }
-        
+
         terminalOutput.append("⏳ Generando dataset masivo de " + cantidad + " registros...\n");
-        
+
         try {
             long start = System.nanoTime();
             if (cantidad == 50) {
                 GeneradorDatasets.generarEInsertar(tablaActiva, 50);
-                terminalOutput.append("✔️ Dataset de 50 registros cargado. El Árbol AVL ha sido balanceado en memoria.\n");
+                terminalOutput
+                        .append("✔️ Dataset de 50 registros cargado. El Árbol AVL ha sido balanceado en memoria.\n");
             } else {
                 GeneradorDatasets.generarEInsertar(tablaActiva, 5000);
                 terminalOutput.append("✔️ Dataset mediano de 5,000+ registros cargado en memoria exitosamente.\n");
-                
+
                 // Ejecutar benchmark comparativo
                 terminalOutput.append("📊 Iniciando Benchmark Comparativo de Búsqueda:\n");
                 String metricas = GeneradorDatasets.ejecutarBenchmark(tablaActiva);
@@ -389,7 +401,8 @@ public class VentanaPrincipal extends JFrame {
             }
             pers.guardarTabla(tablaActiva); // Sincronizar a disco
             long total = System.nanoTime() - start;
-            terminalOutput.append(String.format("⏱️ Tiempo total de inserción y guardado: %.2f ms\n\n", total / 1_000_000.0));
+            terminalOutput
+                    .append(String.format("⏱️ Tiempo total de inserción y guardado: %.2f ms\n\n", total / 1_000_000.0));
             actualizarVisualizacion();
         } catch (Exception e) {
             terminalOutput.append("❌ Error en Dataset: " + e.getMessage() + "\n");
@@ -397,12 +410,16 @@ public class VentanaPrincipal extends JFrame {
     }
 
     private void limpiarTablaActiva() {
-        if (tablaActiva == null) return;
-        int opt = JOptionPane.showConfirmDialog(this, "¿Está seguro que desea eliminar todos los registros de la tabla '" + tablaActiva.getNombre() + "'?", "Confirmar Limpieza", JOptionPane.YES_NO_OPTION);
+        if (tablaActiva == null)
+            return;
+        int opt = JOptionPane.showConfirmDialog(this,
+                "¿Está seguro que desea eliminar todos los registros de la tabla '" + tablaActiva.getNombre() + "'?",
+                "Confirmar Limpieza", JOptionPane.YES_NO_OPTION);
         if (opt == JOptionPane.YES_OPTION) {
             try {
                 // Instanciar un árbol AVL vacío
-                Tabla nueva = new Tabla(tablaActiva.getNombre(), tablaActiva.getEsquema(), tablaActiva.getClavePrimaria());
+                Tabla nueva = new Tabla(tablaActiva.getNombre(), tablaActiva.getEsquema(),
+                        tablaActiva.getClavePrimaria());
                 db.eliminarTabla(tablaActiva.getNombre());
                 db.registrarTabla(nueva);
                 pers.guardarTabla(nueva);
@@ -418,7 +435,8 @@ public class VentanaPrincipal extends JFrame {
 
     private void ejecutarComandoSQL() {
         String sql = inputCommand.getText().trim();
-        if (sql.isEmpty()) return;
+        if (sql.isEmpty())
+            return;
 
         inputCommand.setText("");
         terminalOutput.append("avl-db> " + sql + "\n");
@@ -433,17 +451,19 @@ public class VentanaPrincipal extends JFrame {
             PrintStream ps = new PrintStream(baos);
             PrintStream viejo = System.out;
             System.setOut(ps);
-            
+
             InterpreteREPL.imprimirResultado(res, elapsed);
-            
+
             System.out.flush();
             System.setOut(viejo);
-            
+
             terminalOutput.append(baos.toString());
             terminalOutput.append("\n");
 
-            // Si es un comando de definición (CREATE TABLE o DROP/SHOW), refrescar catálogo
-            if (sql.toUpperCase().contains("CREATE TABLE")) {
+            // Si es un comando de definición (CREATE TABLE o DROP TABLE), refrescar
+            // catálogo
+            String upperSql = sql.toUpperCase();
+            if (upperSql.contains("CREATE TABLE") || upperSql.contains("DROP TABLE")) {
                 refrescarTablas();
             } else {
                 actualizarVisualizacion();

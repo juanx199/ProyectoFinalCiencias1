@@ -7,19 +7,21 @@ import java.io.IOException;
 import java.util.*;
 import java.util.regex.*;
 
-/**
- * Analizador de consultas (Parser) SQL-like simplificado.
- * Convierte comandos de texto a llamadas operacionales del motor de base de datos.
- */
+// Analizador de consultas (Parser) SQL-like simplificado.
+// Convierte comandos de texto a llamadas operacionales del motor de base de datos.
 public class ParserSQL {
     private final BaseDatos db;
     private final GestorPersistencia pers;
 
     // Patrones Regex de Comandos
-    private static final Pattern PATTERN_CREATE = Pattern.compile("^CREATE\\s+TABLE\\s+(\\w+)\\s*\\(\\s*(.+)\\s*\\)$", Pattern.CASE_INSENSITIVE);
-    private static final Pattern PATTERN_INSERT = Pattern.compile("^INSERT\\s+INTO\\s+(\\w+)\\s+VALUES\\s*\\(\\s*(.+)\\s*\\)$", Pattern.CASE_INSENSITIVE);
-    private static final Pattern PATTERN_SELECT = Pattern.compile("^SELECT\\s+\\*\\s+FROM\\s+(\\w+)(?:\\s+WHERE\\s+(.+))?$", Pattern.CASE_INSENSITIVE);
-    private static final Pattern PATTERN_DELETE = Pattern.compile("^DELETE\\s+FROM\\s+(\\w+)\\s+WHERE\\s+(.+)$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern PATTERN_CREATE = Pattern.compile("^CREATE\\s+TABLE\\s+(\\w+)\\s*\\(\\s*(.+)\\s*\\)$",
+            Pattern.CASE_INSENSITIVE);
+    private static final Pattern PATTERN_INSERT = Pattern
+            .compile("^INSERT\\s+INTO\\s+(\\w+)\\s+VALUES\\s*\\(\\s*(.+)\\s*\\)$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern PATTERN_SELECT = Pattern
+            .compile("^SELECT\\s+\\*\\s+FROM\\s+(\\w+)(?:\\s+WHERE\\s+(.+))?$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern PATTERN_DELETE = Pattern.compile("^DELETE\\s+FROM\\s+(\\w+)\\s+WHERE\\s+(.+)$",
+            Pattern.CASE_INSENSITIVE);
     private static final Pattern PATTERN_SHOW = Pattern.compile("^SHOW\\s+TABLES$", Pattern.CASE_INSENSITIVE);
     private static final Pattern PATTERN_DESCRIBE = Pattern.compile("^DESCRIBE\\s+(\\w+)$", Pattern.CASE_INSENSITIVE);
     private static final Pattern PATTERN_DROP = Pattern.compile("^DROP\\s+TABLE\\s+(\\w+)$", Pattern.CASE_INSENSITIVE);
@@ -31,8 +33,10 @@ public class ParserSQL {
 
     /**
      * Ejecuta una sentencia SQL-like.
+     * 
      * @param sql La consulta ingresada.
-     * @return Un objeto de tipo ResultadoQuery que contiene filas estructuradas o mensaje de éxito.
+     * @return Un objeto de tipo ResultadoQuery que contiene filas estructuradas o
+     *         mensaje de éxito.
      */
     public ResultadoQuery ejecutar(String sql) throws Exception {
         if (sql == null || sql.trim().isEmpty()) {
@@ -91,7 +95,8 @@ public class ParserSQL {
             return ejecutarDrop(mDrop.group(1));
         }
 
-        throw new IllegalArgumentException("Sintaxis no válida. Comandos admitidos: CREATE TABLE, DROP TABLE, INSERT INTO, SELECT, DELETE, SHOW TABLES, DESCRIBE.");
+        throw new IllegalArgumentException(
+                "Sintaxis no válida. Comandos admitidos: CREATE TABLE, DROP TABLE, INSERT INTO, SELECT, DELETE, SHOW TABLES, DESCRIBE.");
     }
 
     private ResultadoQuery ejecutarShowTables() {
@@ -142,9 +147,10 @@ public class ParserSQL {
         for (String col : columnas) {
             String[] partes = col.trim().split("\\s+");
             if (partes.length < 2) {
-                throw new IllegalArgumentException("Definición de columna inválida: '" + col + "'. Debe tener formato: nombre TIPO [PK].");
+                throw new IllegalArgumentException(
+                        "Definición de columna inválida: '" + col + "'. Debe tener formato: nombre TIPO [PK].");
             }
-            
+
             String colName = partes[0];
             String typeStr = partes[1].toUpperCase();
             TipoDato tipo = TipoDato.valueOf(typeStr);
@@ -175,7 +181,7 @@ public class ParserSQL {
 
         Tabla t = db.crearTabla(nombreTabla, esquema, pkColumna);
         pers.guardarTabla(t); // Persistir la creación física de la tabla (con cabecera vacía)
-        
+
         return ResultadoQuery.exito("Tabla '" + t.getNombre() + "' creada exitosamente en memoria y disco.");
     }
 
@@ -185,12 +191,14 @@ public class ParserSQL {
             throw new IllegalArgumentException("La tabla '" + nombreTabla + "' no existe.");
         }
 
-        // Usar el tokenizador CSV para parsear valores de forma correcta (soporta comas dentro de strings)
+        // Usar el tokenizador CSV para parsear valores de forma correcta (soporta comas
+        // dentro de strings)
         List<String> celdas = GestorPersistencia.parsearLineaCSV(valoresRaw);
         List<String> columnas = new ArrayList<>(t.getEsquema().keySet());
 
         if (celdas.size() != columnas.size()) {
-            throw new IllegalArgumentException("Cantidad de valores (" + celdas.size() + ") no coincide con la cantidad de columnas de la tabla (" + columnas.size() + ").");
+            throw new IllegalArgumentException("Cantidad de valores (" + celdas.size()
+                    + ") no coincide con la cantidad de columnas de la tabla (" + columnas.size() + ").");
         }
 
         Registro registro = new Registro();
@@ -223,7 +231,8 @@ public class ParserSQL {
         } else {
             String queryTrim = whereRaw.trim();
             // Intentar matchear BETWEEN
-            Matcher mBetween = Pattern.compile("^(\\w+)\\s+BETWEEN\\s+(.+)\\s+AND\\s+(.+)$", Pattern.CASE_INSENSITIVE).matcher(queryTrim);
+            Matcher mBetween = Pattern.compile("^(\\w+)\\s+BETWEEN\\s+(.+)\\s+AND\\s+(.+)$", Pattern.CASE_INSENSITIVE)
+                    .matcher(queryTrim);
             // Intentar matchear exacto (=)
             Matcher mExact = Pattern.compile("^(\\w+)\\s*=\\s*(.+)$", Pattern.CASE_INSENSITIVE).matcher(queryTrim);
 
@@ -241,7 +250,8 @@ public class ParserSQL {
                 } else {
                     // Consulta secuencial O(N)
                     TipoDato tipo = t.getEsquema().get(col);
-                    if (tipo == null) throw new IllegalArgumentException("La columna '" + col + "' no existe.");
+                    if (tipo == null)
+                        throw new IllegalArgumentException("La columna '" + col + "' no existe.");
                     Comparable val1 = (Comparable) tipo.parsear(val1Raw);
                     Comparable val2 = (Comparable) tipo.parsear(val2Raw);
 
@@ -267,7 +277,8 @@ public class ParserSQL {
                 } else {
                     // Consulta secuencial O(N)
                     TipoDato tipo = t.getEsquema().get(col);
-                    if (tipo == null) throw new IllegalArgumentException("La columna '" + col + "' no existe.");
+                    if (tipo == null)
+                        throw new IllegalArgumentException("La columna '" + col + "' no existe.");
                     Object targetVal = tipo.parsear(valRaw);
 
                     for (Registro r : t.obtenerTodos()) {
@@ -278,11 +289,13 @@ public class ParserSQL {
                     }
                 }
             } else {
-                throw new IllegalArgumentException("Cláusula WHERE no soportada. Use 'col = val' o 'col BETWEEN val1 AND val2'.");
+                throw new IllegalArgumentException(
+                        "Cláusula WHERE no soportada. Use 'col = val' o 'col BETWEEN val1 AND val2'.");
             }
         }
 
-        ResultadoQuery res = new ResultadoQuery(t.getEsquema(), resultado, "Se encontraron " + resultado.size() + " registros.");
+        ResultadoQuery res = new ResultadoQuery(t.getEsquema(), resultado,
+                "Se encontraron " + resultado.size() + " registros.");
         res.setMetricaRendimiento(metricaBusqueda);
         return res;
     }
@@ -297,7 +310,8 @@ public class ParserSQL {
         Matcher mExact = Pattern.compile("^(\\w+)\\s*=\\s*(.+)$", Pattern.CASE_INSENSITIVE).matcher(queryTrim);
 
         if (!mExact.matches()) {
-            throw new IllegalArgumentException("DELETE solo soporta comparación exacta '=' en el WHERE (ej: WHERE id = 5).");
+            throw new IllegalArgumentException(
+                    "DELETE solo soporta comparación exacta '=' en el WHERE (ej: WHERE id = 5).");
         }
 
         String col = mExact.group(1);
@@ -312,7 +326,8 @@ public class ParserSQL {
         } else {
             // Eliminar registros secuencialmente
             TipoDato tipo = t.getEsquema().get(col);
-            if (tipo == null) throw new IllegalArgumentException("La columna '" + col + "' no existe.");
+            if (tipo == null)
+                throw new IllegalArgumentException("La columna '" + col + "' no existe.");
             Object targetVal = tipo.parsear(valRaw);
 
             List<Integer> keysToDelete = new ArrayList<>();
@@ -345,7 +360,8 @@ public class ParserSQL {
         try {
             pers.eliminarTablaFisica(nombreTabla);
         } catch (IOException e) {
-            throw new IOException("Error crítico al intentar borrar el archivo físico de la tabla '" + nombreTabla + "': " + e.getMessage(), e);
+            throw new IOException("Error crítico al intentar borrar el archivo físico de la tabla '" + nombreTabla
+                    + "': " + e.getMessage(), e);
         }
 
         // 2. Si el borrado en disco tiene éxito, remover de memoria
@@ -358,7 +374,8 @@ public class ParserSQL {
         // 1. Encontrar "SET" fuera de comillas
         int idxSet = buscarSetFueraComillas(comando);
         if (idxSet == -1) {
-            throw new IllegalArgumentException("Sintaxis de UPDATE inválida. Falta la cláusula SET (ej: UPDATE tabla SET col = val WHERE ...).");
+            throw new IllegalArgumentException(
+                    "Sintaxis de UPDATE inválida. Falta la cláusula SET (ej: UPDATE tabla SET col = val WHERE ...).");
         }
 
         // Obtener el nombre de la tabla
@@ -374,7 +391,8 @@ public class ParserSQL {
         // 2. Encontrar "WHERE" fuera de comillas
         int idxWhere = buscarWhereFueraComillas(rest);
         if (idxWhere == -1) {
-            throw new IllegalArgumentException("Sintaxis de UPDATE inválida. La cláusula WHERE es obligatoria para actualizar registros.");
+            throw new IllegalArgumentException(
+                    "Sintaxis de UPDATE inválida. La cláusula WHERE es obligatoria para actualizar registros.");
         }
 
         String setRaw = rest.substring(0, idxWhere).trim();
@@ -383,7 +401,8 @@ public class ParserSQL {
         // 3. Parsear WHERE (criterio de igualdad exacta)
         Matcher mExact = Pattern.compile("^(\\w+)\\s*=\\s*(.+)$", Pattern.CASE_INSENSITIVE).matcher(whereRaw);
         if (!mExact.matches()) {
-            throw new IllegalArgumentException("UPDATE solo soporta comparación exacta '=' en el WHERE (ej: WHERE id = 5).");
+            throw new IllegalArgumentException(
+                    "UPDATE solo soporta comparación exacta '=' en el WHERE (ej: WHERE id = 5).");
         }
 
         String colCriterio = mExact.group(1);
@@ -420,12 +439,71 @@ public class ParserSQL {
                 Object valParsed = tipo.parsear(valLimpio);
                 nuevosValores.put(colName, valParsed);
             } catch (Exception e) {
-                throw new IllegalArgumentException("Error de tipo al asignar '" + valRaw + "' a la columna '" + colName + "': " + e.getMessage());
+                throw new IllegalArgumentException(
+                        "Error de tipo al asignar '" + valRaw + "' a la columna '" + colName + "': " + e.getMessage());
             }
         }
 
-        // TODO: Fase 4 - Ejecución transaccional (búsqueda, backup, aplicación y guardado con rollback)
-        return ResultadoQuery.exito("Sintaxis validada. " + nuevosValores.size() + " columnas a actualizar.");
+        // 5. Búsqueda de registros coincidentes
+        List<Registro> matched = new ArrayList<>();
+        String metricaBusqueda = "Escanear lineal O(N)";
+
+        if (colCriterio.equalsIgnoreCase(t.getClavePrimaria())) {
+            // Consulta exacta O(log N) usando árbol AVL
+            Integer pkVal = Integer.parseInt(valCriterioRaw);
+            Registro r = t.buscar(pkVal);
+            if (r != null) {
+                matched.add(r);
+            }
+            metricaBusqueda = "Búsqueda EXACTA INDEXADA en AVL O(log N)";
+        } else {
+            // Consulta secuencial O(N)
+            TipoDato tipo = t.getEsquema().get(colCriterio);
+            Object targetVal = tipo.parsear(quitarComillas(valCriterioRaw));
+            for (Registro r : t.obtenerTodos()) {
+                Object valReg = r.get(colCriterio);
+                if (valReg != null && valReg.equals(targetVal)) {
+                    matched.add(r);
+                }
+            }
+        }
+
+        if (matched.isEmpty()) {
+            ResultadoQuery res = ResultadoQuery.exito("Actualizados 0 registros correctamente.");
+            res.setMetricaRendimiento(metricaBusqueda);
+            return res;
+        }
+
+        // 6. Respaldar estado en memoria (para rollback si falla la escritura a disco)
+        List<Map<String, Object>> backup = new ArrayList<>();
+        for (Registro reg : matched) {
+            backup.add(new HashMap<>(reg.getValores()));
+        }
+
+        // 7. Aplicar cambios en memoria
+        for (Registro reg : matched) {
+            for (Map.Entry<String, Object> entry : nuevosValores.entrySet()) {
+                reg.set(entry.getKey(), entry.getValue());
+            }
+        }
+
+        // 8. Intentar guardar físicamente a disco (Garantía Transaccional / Atomicidad)
+        try {
+            pers.guardarTabla(t);
+        } catch (IOException e) {
+            // Revertir (Rollback) cambios en memoria en caso de fallo de E/S
+            for (int i = 0; i < matched.size(); i++) {
+                Registro reg = matched.get(i);
+                Map<String, Object> oldValores = backup.get(i);
+                reg.getValores().clear();
+                reg.getValores().putAll(oldValores);
+            }
+            throw new IOException("Error crítico al persistir a disco. Transacción revertida en memoria. Causa: " + e.getMessage(), e);
+        }
+
+        ResultadoQuery res = ResultadoQuery.exito("Actualizados " + matched.size() + " registros correctamente.");
+        res.setMetricaRendimiento(metricaBusqueda);
+        return res;
     }
 
     private static int buscarSetFueraComillas(String texto) {
@@ -510,17 +588,19 @@ public class ParserSQL {
             } else if (c == '"' && !enComillaSimple) {
                 enComillaDoble = !enComillaDoble;
             } else if (c == '=' && !enComillaSimple && !enComillaDoble) {
-                return new String[]{
-                    asignacion.substring(0, i).trim(),
-                    asignacion.substring(i + 1).trim()
+                return new String[] {
+                        asignacion.substring(0, i).trim(),
+                        asignacion.substring(i + 1).trim()
                 };
             }
         }
-        throw new IllegalArgumentException("Asignación SET inválida: '" + asignacion + "'. Debe ser de la forma col = val.");
+        throw new IllegalArgumentException(
+                "Asignación SET inválida: '" + asignacion + "'. Debe ser de la forma col = val.");
     }
 
     private static String quitarComillas(String s) {
-        if (s == null) return null;
+        if (s == null)
+            return null;
         s = s.trim();
         if ((s.startsWith("'") && s.endsWith("'")) || (s.startsWith("\"") && s.endsWith("\""))) {
             if (s.length() >= 2) {

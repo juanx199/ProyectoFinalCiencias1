@@ -6,10 +6,9 @@ import com.dbmotor.model.TipoDato;
 
 import java.util.*;
 
-/**
- * Consola de comandos interactiva REPL (Read-Eval-Print Loop).
- * Proporciona interacción en consola con formateo ASCII premium para consultas relacionales.
- */
+// Consola de comandos interactiva REPL (Read-Eval-Print Loop).
+//Proporciona interacción en consola con formateo ASCII premium para consultas relacionales.
+
 public class InterpreteREPL {
     private final ParserSQL parser;
     private final Scanner scanner;
@@ -43,7 +42,8 @@ public class InterpreteREPL {
                 break;
             }
 
-            if (input.equalsIgnoreCase("exit") || input.equalsIgnoreCase("quit") || input.equalsIgnoreCase("exit;") || input.equalsIgnoreCase("quit;")) {
+            if (input.equalsIgnoreCase("exit") || input.equalsIgnoreCase("quit") || input.equalsIgnoreCase("exit;")
+                    || input.equalsIgnoreCase("quit;")) {
                 System.out.println("\n👋 Cerrando motor de base de datos. ¡Hasta luego!");
                 break;
             }
@@ -54,9 +54,11 @@ public class InterpreteREPL {
 
             // Bucle para acumular líneas si no termina en ';'
             StringBuilder queryBuilder = new StringBuilder(input);
-            while (!queryBuilder.toString().trim().endsWith(";") && !queryBuilder.toString().equalsIgnoreCase("exit") && !queryBuilder.toString().equalsIgnoreCase("quit")) {
+            while (!queryBuilder.toString().trim().endsWith(";") && !queryBuilder.toString().equalsIgnoreCase("exit")
+                    && !queryBuilder.toString().equalsIgnoreCase("quit")) {
                 System.out.print("     -> ");
-                if (!scanner.hasNextLine()) break;
+                if (!scanner.hasNextLine())
+                    break;
                 String nextLine = scanner.nextLine();
                 queryBuilder.append(" ").append(nextLine.trim());
             }
@@ -82,9 +84,8 @@ public class InterpreteREPL {
         }
     }
 
-    /**
-     * Imprime el resultado de forma estilizada con una tabla ASCII alineada.
-     */
+    // Imprime el resultado de forma estilizada con una tabla ASCII alineada.
+
     public static void imprimirResultado(ResultadoQuery res, long elapsedNanoseconds) {
         if (res.getMensaje() != null && !res.tieneFilas()) {
             System.out.println("✔️ Confirmación: " + res.getMensaje());
@@ -153,13 +154,13 @@ public class InterpreteREPL {
 
         // Imprimir Estadísticas y Métricas
         System.out.println(res.getFilas().size() + " registros en conjunto (set).");
-        System.out.println("🏷️ Algoritmo de Acceso: " + res.getMetricaRendimiento());
-        System.out.printf("⏱️ Tiempo de Ejecución: %.3f ms\n", elapsedNanoseconds / 1_000_000.0);
+        System.out.println(" Algoritmo de Acceso: " + res.getMetricaRendimiento());
+        System.out.printf(" Tiempo de Ejecución: %.3f ms\n", elapsedNanoseconds / 1_000_000.0);
     }
 
-    /**
-     * Centra/ajusta el texto agregando espacios en blanco para encajar en el ancho especificado.
-     */
+    // Centra/ajusta el texto agregando espacios en blanco para encajar en el ancho
+    // especificado.
+
     private static String ajustarTexto(String texto, int ancho) {
         if (texto.length() >= ancho) {
             return texto.substring(0, ancho);
