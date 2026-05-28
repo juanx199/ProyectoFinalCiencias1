@@ -22,6 +22,7 @@ public class ParserSQL {
     private static final Pattern PATTERN_DELETE = Pattern.compile("^DELETE\\s+FROM\\s+(\\w+)\\s+WHERE\\s+(.+)$", Pattern.CASE_INSENSITIVE);
     private static final Pattern PATTERN_SHOW = Pattern.compile("^SHOW\\s+TABLES$", Pattern.CASE_INSENSITIVE);
     private static final Pattern PATTERN_DESCRIBE = Pattern.compile("^DESCRIBE\\s+(\\w+)$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern PATTERN_DROP = Pattern.compile("^DROP\\s+TABLE\\s+(\\w+)$", Pattern.CASE_INSENSITIVE);
 
     public ParserSQL(BaseDatos db, GestorPersistencia pers) {
         this.db = db;
@@ -79,7 +80,13 @@ public class ParserSQL {
             return ejecutarDelete(mDelete.group(1), mDelete.group(2));
         }
 
-        throw new IllegalArgumentException("Sintaxis no válida. Comandos admitidos: CREATE TABLE, INSERT INTO, SELECT, DELETE, SHOW TABLES, DESCRIBE.");
+        // 7. DROP TABLE
+        Matcher mDrop = PATTERN_DROP.matcher(comando);
+        if (mDrop.matches()) {
+            return ejecutarDrop(mDrop.group(1));
+        }
+
+        throw new IllegalArgumentException("Sintaxis no válida. Comandos admitidos: CREATE TABLE, DROP TABLE, INSERT INTO, SELECT, DELETE, SHOW TABLES, DESCRIBE.");
     }
 
     private ResultadoQuery ejecutarShowTables() {
@@ -322,5 +329,23 @@ public class ParserSQL {
         }
 
         return ResultadoQuery.exito("Eliminados " + eliminados + " registros correctamente.");
+    }
+
+    private ResultadoQuery ejecutarDrop(String nombreTabla) throws Exception {
+        if (!db.existeTabla(nombreTabla)) {
+            throw new IllegalArgumentException("La tabla '" + nombreTabla + "' no existe.");
+        }
+
+        // 1. Borrar archivo de disco primero para asegurar la atomicidad transaccional
+        try {
+            pers.eliminarTablaFisica(nombreTabla);
+        } catch (IOException e) {
+            throw new IOException("Error crítico al intentar borrar el archivo físico de la tabla '" + nombreTabla + "': " + e.getMessage(), e);
+        }
+
+        // 2. Si el borrado en disco tiene éxito, remover de memoria
+        db.eliminarTabla(nombreTabla);
+
+        return ResultadoQuery.exito("Tabla '" + nombreTabla + "' borrada exitosamente de memoria y disco.");
     }
 }

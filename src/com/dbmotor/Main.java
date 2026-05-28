@@ -18,7 +18,7 @@ public class Main {
 
     public static void main(String[] args) {
         // 1. Definir directorio de persistencia física (dentro del espacio de trabajo)
-        String workspaceRoot = "C:" + File.separator + "Users" + File.separator + "RYZEN 5" 
+        String workspaceRoot = System.getProperty("user.home") 
                 + File.separator + ".gemini" + File.separator + "antigravity" 
                 + File.separator + "scratch" + File.separator + "db-motor-avl";
         String directorioDatos = workspaceRoot + File.separator + "data";

@@ -10,8 +10,10 @@ import java.nio.file.*;
 import java.util.*;
 
 /**
- * Gestor encargado de serializar y deserializar físicamente las tablas en archivos CSV.
- * Proporciona atomicidad en las escrituras mediante archivos temporales (.tmp) y reemplazos a nivel de S.O.
+ * Gestor encargado de serializar y deserializar físicamente las tablas en
+ * archivos CSV.
+ * Proporciona atomicidad en las escrituras mediante archivos temporales (.tmp)
+ * y reemplazos a nivel de S.O.
  */
 public class GestorPersistencia {
     private final String directorioDatos;
@@ -31,7 +33,8 @@ public class GestorPersistencia {
     }
 
     /**
-     * Guarda físicamente el estado de una tabla utilizando la estrategia de reemplazo atómico (.tmp).
+     * Guarda físicamente el estado de una tabla utilizando la estrategia de
+     * reemplazo atómico (.tmp).
      */
     public synchronized void guardarTabla(Tabla tabla) throws IOException {
         String nombreArchivoFinal = tabla.getNombre().toLowerCase() + ".csv";
@@ -81,34 +84,40 @@ public class GestorPersistencia {
         try {
             Files.move(rutaTemporal, rutaFinal, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
         } catch (IOException e) {
-            // Si falla el ATOMIC_MOVE (algunos S.O. o sistemas de archivos en red no lo soportan),
+            // Si falla el ATOMIC_MOVE (algunos S.O. o sistemas de archivos en red no lo
+            // soportan),
             // intentar un reemplazo estándar seguro
             Files.move(rutaTemporal, rutaFinal, StandardCopyOption.REPLACE_EXISTING);
         }
     }
 
     /**
-     * Carga y reconstruye todas las tablas persistidas en el directorio de almacenamiento.
+     * Carga y reconstruye todas las tablas persistidas en el directorio de
+     * almacenamiento.
      */
     public synchronized void cargarBaseDatos(BaseDatos db) throws IOException {
         Path directPath = Paths.get(directorioDatos);
-        if (!Files.exists(directPath)) return;
+        if (!Files.exists(directPath))
+            return;
 
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(directPath, "*.csv")) {
             for (Path entry : stream) {
                 try {
                     Tabla tabla = cargarTablaDesdeArchivo(entry.toFile());
                     db.registrarTabla(tabla);
-                    System.out.println("-> Tabla '" + tabla.getNombre() + "' cargada con éxito (" + tabla.obtenerTodos().size() + " registros).");
+                    System.out.println("-> Tabla '" + tabla.getNombre() + "' cargada con éxito ("
+                            + tabla.obtenerTodos().size() + " registros).");
                 } catch (Exception e) {
-                    System.err.println("❌ Error al cargar la tabla desde " + entry.getFileName() + ": " + e.getMessage());
+                    System.err
+                            .println("❌ Error al cargar la tabla desde " + entry.getFileName() + ": " + e.getMessage());
                 }
             }
         }
     }
 
     /**
-     * Reconstruye una sola tabla leyendo secuencialmente su archivo físico e insertando en el árbol AVL.
+     * Reconstruye una sola tabla leyendo secuencialmente su archivo físico e
+     * insertando en el árbol AVL.
      */
     public Tabla cargarTablaDesdeArchivo(File archivo) throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
@@ -143,11 +152,14 @@ public class GestorPersistencia {
             int nLinea = 2;
             while ((lineaRegistro = reader.readLine()) != null) {
                 nLinea++;
-                if (lineaRegistro.trim().isEmpty()) continue;
+                if (lineaRegistro.trim().isEmpty())
+                    continue;
 
                 List<String> celdas = parsearLineaCSV(lineaRegistro);
                 if (celdas.size() != nombresColumnas.size()) {
-                    System.err.println("⚠️ Saltando línea corrupta " + nLinea + " en " + archivo.getName() + " (columnas esperadas: " + nombresColumnas.size() + ", encontradas: " + celdas.size() + ")");
+                    System.err.println("⚠️ Saltando línea corrupta " + nLinea + " en " + archivo.getName()
+                            + " (columnas esperadas: " + nombresColumnas.size() + ", encontradas: " + celdas.size()
+                            + ")");
                     continue;
                 }
 
@@ -162,7 +174,8 @@ public class GestorPersistencia {
                 try {
                     tabla.insertar(registro);
                 } catch (IllegalArgumentException e) {
-                    System.err.println("⚠️ Violación de integridad al cargar registro en línea " + nLinea + " de " + archivo.getName() + ": " + e.getMessage());
+                    System.err.println("⚠️ Violación de integridad al cargar registro en línea " + nLinea + " de "
+                            + archivo.getName() + ": " + e.getMessage());
                 }
             }
 
@@ -188,7 +201,8 @@ public class GestorPersistencia {
     }
 
     /**
-     * Tokenizador estándar RFC-4180 para parsear celdas de una línea de archivo CSV.
+     * Tokenizador estándar RFC-4180 para parsear celdas de una línea de archivo
+     * CSV.
      */
     public static List<String> parsearLineaCSV(String linea) {
         List<String> celdas = new ArrayList<>();
@@ -200,7 +214,8 @@ public class GestorPersistencia {
 
             if (c == '"') {
                 if (dentroComillas && i + 1 < linea.length() && linea.charAt(i + 1) == '"') {
-                    // Es una comilla doble escapada ("") -> añadir comilla simple y saltar el siguiente char
+                    // Es una comilla doble escapada ("") -> añadir comilla simple y saltar el
+                    // siguiente char
                     sb.append('"');
                     i++;
                 } else {
@@ -221,9 +236,8 @@ public class GestorPersistencia {
         return celdas;
     }
 
-    /**
-     * Elimina físicamente el archivo CSV de una tabla del disco.
-     */
+    // Elimina físicamente el archivo CSV de una tabla del disco.
+
     public synchronized void eliminarTablaFisica(String nombreTabla) throws IOException {
         String nombreArchivoFinal = nombreTabla.toLowerCase() + ".csv";
         Path rutaFinal = Paths.get(directorioDatos, nombreArchivoFinal);
