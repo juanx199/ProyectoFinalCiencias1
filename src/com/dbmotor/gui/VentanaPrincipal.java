@@ -240,14 +240,11 @@ public class VentanaPrincipal extends JFrame {
 
     private void crearTablaDefecto() {
         try {
-            LinkedHashMap<String, TipoDato> esquema = new LinkedHashMap<>();
-            esquema.put("id", TipoDato.INT);
-            esquema.put("nombre", TipoDato.TEXT);
-            esquema.put("saldo", TipoDato.REAL);
-            esquema.put("activo", TipoDato.BOOLEAN);
-
+            if (db.existeTabla("usuarios")) {
+                parser.ejecutar("DROP TABLE usuarios;");
+            }
             parser.ejecutar("CREATE TABLE usuarios (id INT PK, nombre TEXT, saldo REAL, activo BOOLEAN);");
-            terminalOutput.append("✔️ Tabla 'usuarios' creada con éxito.\n");
+            terminalOutput.append("✔️ Tabla 'usuarios' inicializada con éxito (esquema limpio).\n");
             refrescarTablas();
         } catch (Exception e) {
             terminalOutput.append("❌ Error: " + e.getMessage() + "\n");
@@ -275,7 +272,7 @@ public class VentanaPrincipal extends JFrame {
 
         String query;
         if (tablaActiva.getNombre().equalsIgnoreCase("usuarios")) {
-            query = String.format("INSERT INTO %s VALUES (%d, '%s', %.2f, %b);", tablaActiva.getNombre(), id, nombre,
+            query = String.format(java.util.Locale.US, "INSERT INTO %s VALUES (%d, '%s', %.2f, %b);", tablaActiva.getNombre(), id, nombre,
                     saldo, activo);
         } else {
             // Generalización para cualquier otra tabla creada por CLI
