@@ -82,3 +82,7 @@ El motor parsea de forma segura sentencias SQL-like, aislando comillas y caracte
 * **`com.dbmotor.storage`**: `GestorPersistencia` se encarga de leer y escribir físicamente las tablas a archivos CSV en el directorio de datos. Utiliza una estrategia atómica de archivos temporales (`.tmp`) y renombrado atómico a nivel de S.O.
 * **`com.dbmotor.parser`**: El `ParserSQL` traduce texto en operaciones lógicas del motor. `InterpreteREPL` da formato a las salidas en tablas ASCII.
 * **`com.dbmotor.gui`**: Módulo Swing que gestiona el renderizado de la ventana principal y la topología geométrica del árbol AVL.
+
+## UML
+<img width="3236" height="2568" alt="UMLFinalCiencias" src="https://github.com/user-attachments/assets/ac9ce809-4281-4403-9c66-e4d3ddbb83e8" />
+
