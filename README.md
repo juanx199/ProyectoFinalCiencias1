@@ -1,4 +1,4 @@
-<img width="2820" height="2408" alt="UMLciencias1 1" src="https://github.com/user-attachments/assets/985d2c42-5649-43cc-8635-3fb097ec2207" />
+
 # Motor de Base de Datos Relacional Indexado por Árbol AVL
 
 Este proyecto es un motor de base de datos relacional ligero, desarrollado desde cero en Java, que utiliza una estructura de **Árbol AVL auto-balanceado** propio para indexar registros y garantizar consultas ultrarrápidas en complejidad logarítmica $\mathcal{O}(\log n)$.
