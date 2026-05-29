@@ -7,9 +7,8 @@ import com.dbmotor.model.Registro;
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * Componente gráfico personalizado (JPanel) que dibuja interactivamente la topología del árbol AVL.
- */
+// Componente gráfico personalizado (JPanel) que dibuja interactivamente la topología del árbol AVL.
+
 public class VisualizadorArbol extends JPanel {
     private ArbolAVL<Registro> arbol;
 
@@ -19,9 +18,8 @@ public class VisualizadorArbol extends JPanel {
         setBackground(new Color(15, 23, 42)); // Slate 900
     }
 
-    /**
-     * Setea el árbol AVL actual y refresca la visualización.
-     */
+    // Setea el árbol AVL actual y refresca la visualización.
+
     public void setArbol(ArbolAVL<Registro> arbol) {
         this.arbol = arbol;
         repaint();
@@ -30,9 +28,9 @@ public class VisualizadorArbol extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        
+
         Graphics2D g2d = (Graphics2D) g;
-        // Habilitar suavizado (Anti-Aliasing) para líneas y textos perfectos
+        // Anti-Aliasing
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
@@ -54,14 +52,16 @@ public class VisualizadorArbol extends JPanel {
     }
 
     /**
-     * Dibuja recursivamente el nodo AVL actual, conectando las líneas a los hijos primero.
+     * Dibuja recursivamente el nodo AVL actual, conectando las líneas a los hijos
+     * primero.
      */
     private void dibujarArbol(Graphics2D g2d, NodoAVL<Registro> nodo, int x, int y, int xOffset) {
-        if (nodo == null) return;
+        if (nodo == null)
+            return;
 
         // 1. Dibujar conexiones con los hijos
         int yHijo = y + 70;
-        
+
         if (nodo.left != null) {
             g2d.setColor(new Color(71, 85, 105)); // Slate 600
             g2d.setStroke(new BasicStroke(2.0f));
@@ -76,18 +76,17 @@ public class VisualizadorArbol extends JPanel {
             dibujarArbol(g2d, nodo.right, x + xOffset, yHijo, Math.max(xOffset / 2, 15));
         }
 
-        // 2. Dibujar el nodo actual (Círculo con degradado)
+        // 2. Dibujar el nodo actual
         int radio = 20;
-        
-        // Crear un gradiente de color azul-celeste premium para los nodos
+
+        // Gradiente pa que se vea bonito
         GradientPaint gradiente = new GradientPaint(
                 x - radio, y - radio, new Color(14, 165, 233), // Sky 500
-                x + radio, y + radio, new Color(3, 105, 161)  // Sky 700
+                x + radio, y + radio, new Color(3, 105, 161) // Sky 700
         );
         g2d.setPaint(gradiente);
         g2d.fillOval(x - radio, y - radio, radio * 2, radio * 2);
 
-        // Borde blanco elegante
         g2d.setColor(Color.WHITE);
         g2d.setStroke(new BasicStroke(1.5f));
         g2d.drawOval(x - radio, y - radiusToDiameterOffset(radio), radio * 2, radio * 2);
@@ -101,12 +100,13 @@ public class VisualizadorArbol extends JPanel {
         int ty = y + fm.getAscent() / 2 - 2;
         g2d.drawString(llaveStr, tx, ty);
 
-        // 3. Dibujar metadatos (Factor de Balanceo BF y Altura H) arriba del nodo
+        // 3. Dibujar Factor de Balanceo BF y Altura H arriba del nodo
         int hIzq = (nodo.left != null) ? nodo.left.height : 0;
         int hDer = (nodo.right != null) ? nodo.right.height : 0;
         int bf = hIzq - hDer;
 
-        // Color según balanceo: Verde=Perfecto, Amarillo=Ligeramente desbalanceado, Rojo=Crítico (nunca en AVL)
+        // Color según balanceo: Verde=Perfecto, Amarillo=Ligeramente desbalanceado,
+        // Rojo=Crítico (nunca en AVL)
         Color colorBf = new Color(74, 222, 128); // Green 400
         if (Math.abs(bf) == 1) {
             colorBf = new Color(250, 204, 21); // Yellow 400

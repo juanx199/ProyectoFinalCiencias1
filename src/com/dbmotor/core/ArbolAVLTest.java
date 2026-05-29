@@ -21,15 +21,15 @@ public class ArbolAVLTest {
             testInsercionMasivaYBalance();
             testEliminacionYRebalance();
             testBusquedaYRango();
-            System.out.println("\n🎉 ¡FASE 1 COMPLETADA! Todas las pruebas del Árbol AVL pasaron de forma exitosa.\n");
+            System.out.println("\n ¡FASE 1 COMPLETADA! Todas las pruebas del Árbol AVL pasaron de forma exitosa.\n");
         } catch (Exception e) {
-            System.err.println("\n❌ ERROR en las pruebas unitarias: " + e.getMessage());
+            System.err.println("\n ERROR en las pruebas unitarias: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
     private static void testInsercionMasivaYBalance() {
-        System.out.print("-> Ejecutando prueba de inserción de 10,000 elementos aleatorios... ");
+        System.out.print(" Ejecutando prueba de inserción de 10,000 elementos aleatorios... ");
         ArbolAVL<String> arbol = new ArbolAVL<>();
         Random random = new Random(42); // Semilla fija para reproducibilidad
         List<Integer> insertados = new ArrayList<>();
@@ -44,7 +44,8 @@ public class ArbolAVLTest {
                 // Verificar balance del árbol en tiempo real cada 1000 inserciones
                 if (i % 1000 == 0) {
                     if (!arbol.verifyBalance()) {
-                        throw new IllegalStateException("¡Fallo estructural! El factor de balanceo no es estricto en [-1, 1] en el paso " + i);
+                        throw new IllegalStateException(
+                                "¡Fallo estructural! El factor de balanceo no es estricto en [-1, 1] en el paso " + i);
                     }
                 }
             }
@@ -52,7 +53,7 @@ public class ArbolAVLTest {
 
         // Validación estructural final
         if (!arbol.verifyBalance()) {
-            throw new IllegalStateException("¡Fallo estructural final! El árbol AVL no está balanceado.");
+            throw new IllegalStateException(" El árbol AVL no está balanceado.");
         }
 
         // Validación de recuperación
@@ -92,7 +93,8 @@ public class ArbolAVLTest {
             // Validar balanceo después de cada eliminación
             if (i % 500 == 0) {
                 if (!arbol.verifyBalance()) {
-                    throw new IllegalStateException("¡Fallo estructural en eliminación! Árbol desbalanceado en el paso " + i);
+                    throw new IllegalStateException(
+                            "¡Fallo estructural en eliminación! Árbol desbalanceado en el paso " + i);
                 }
             }
         }
@@ -121,9 +123,9 @@ public class ArbolAVLTest {
     }
 
     private static void testBusquedaYRango() {
-        System.out.print("-> Ejecutando prueba de búsquedas exactas y consultas por rango... ");
+        System.out.print(" Ejecutando prueba de búsquedas exactas y consultas por rango... ");
         ArbolAVL<Integer> arbol = new ArbolAVL<>();
-        
+
         // Insertar claves ordenadas para verificar que se autobalancea perfectamente
         for (int i = 1; i <= 100; i++) {
             arbol.insert(i, i * 10);
@@ -142,14 +144,16 @@ public class ArbolAVLTest {
         for (int i = 0; i < rango.size(); i++) {
             int expectedVal = (25 + i) * 10;
             if (rango.get(i) != expectedVal) {
-                throw new IllegalStateException("Valor incorrecto en el rango: esperado " + expectedVal + " pero se obtuvo " + rango.get(i));
+                throw new IllegalStateException(
+                        "Valor incorrecto en el rango: esperado " + expectedVal + " pero se obtuvo " + rango.get(i));
             }
         }
 
         // Validar rango con límites nulos (infinito)
         List<Integer> todo = arbol.searchRange(null, null);
         if (todo.size() != 100) {
-            throw new IllegalStateException("El rango sin límites debió retornar 100 elementos, retornó: " + todo.size());
+            throw new IllegalStateException(
+                    "El rango sin límites debió retornar 100 elementos, retornó: " + todo.size());
         }
 
         System.out.println("¡ÉXITO!");

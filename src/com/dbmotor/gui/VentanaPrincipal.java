@@ -244,7 +244,7 @@ public class VentanaPrincipal extends JFrame {
                 parser.ejecutar("DROP TABLE usuarios;");
             }
             parser.ejecutar("CREATE TABLE usuarios (id INT PK, nombre TEXT, saldo REAL, activo BOOLEAN);");
-            terminalOutput.append("✔️ Tabla 'usuarios' inicializada con éxito (esquema limpio).\n");
+            terminalOutput.append(" Tabla 'usuarios' inicializada con éxito (esquema limpio).\n");
             refrescarTablas();
         } catch (Exception e) {
             terminalOutput.append("❌ Error: " + e.getMessage() + "\n");
@@ -272,7 +272,8 @@ public class VentanaPrincipal extends JFrame {
 
         String query;
         if (tablaActiva.getNombre().equalsIgnoreCase("usuarios")) {
-            query = String.format(java.util.Locale.US, "INSERT INTO %s VALUES (%d, '%s', %.2f, %b);", tablaActiva.getNombre(), id, nombre,
+            query = String.format(java.util.Locale.US, "INSERT INTO %s VALUES (%d, '%s', %.2f, %b);",
+                    tablaActiva.getNombre(), id, nombre,
                     saldo, activo);
         } else {
             // Generalización para cualquier otra tabla creada por CLI
@@ -300,10 +301,10 @@ public class VentanaPrincipal extends JFrame {
 
         try {
             parser.ejecutar(query);
-            terminalOutput.append("✔️ " + query + "\n");
+            terminalOutput.append(query + "\n");
             actualizarVisualizacion();
         } catch (Exception e) {
-            terminalOutput.append("❌ Error al insertar: " + e.getMessage() + "\n");
+            terminalOutput.append(" Error al insertar: " + e.getMessage() + "\n");
         }
     }
 
@@ -320,7 +321,7 @@ public class VentanaPrincipal extends JFrame {
             String query = "DELETE FROM " + tablaActiva.getNombre() + " WHERE " + tablaActiva.getClavePrimaria() + " = "
                     + key + ";";
             ResultadoQuery res = parser.ejecutar(query);
-            terminalOutput.append("✔️ " + res.getMensaje() + "\n");
+            terminalOutput.append(res.getMensaje() + "\n");
             actualizarVisualizacion();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error al Eliminar",
@@ -351,7 +352,7 @@ public class VentanaPrincipal extends JFrame {
             ResultadoQuery res = parser.ejecutar(query);
             long elapsed = System.nanoTime() - start;
 
-            terminalOutput.append("✔️ Ejecutado: " + query + "\n");
+            terminalOutput.append(" Ejecutado: " + query + "\n");
 
             // Capturar la impresión ASCII redirigiéndola a la terminal gráfica!
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -379,30 +380,30 @@ public class VentanaPrincipal extends JFrame {
             crearTablaDefecto();
         }
 
-        terminalOutput.append("⏳ Generando dataset masivo de " + cantidad + " registros...\n");
+        terminalOutput.append("Generando dataset masivo de " + cantidad + " registros...\n");
 
         try {
             long start = System.nanoTime();
             if (cantidad == 50) {
                 GeneradorDatasets.generarEInsertar(tablaActiva, 50);
                 terminalOutput
-                        .append("✔️ Dataset de 50 registros cargado. El Árbol AVL ha sido balanceado en memoria.\n");
+                        .append("Dataset de 50 registros cargado. El Árbol AVL ha sido balanceado en memoria.\n");
             } else {
                 GeneradorDatasets.generarEInsertar(tablaActiva, 5000);
-                terminalOutput.append("✔️ Dataset mediano de 5,000+ registros cargado en memoria exitosamente.\n");
+                terminalOutput.append(" Dataset mediano de 5,000+ registros cargado en memoria exitosamente.\n");
 
                 // Ejecutar benchmark comparativo
-                terminalOutput.append("📊 Iniciando Benchmark Comparativo de Búsqueda:\n");
+                terminalOutput.append(" Iniciando Benchmark Comparativo de Búsqueda:\n");
                 String metricas = GeneradorDatasets.ejecutarBenchmark(tablaActiva);
                 terminalOutput.append(metricas + "\n");
             }
             pers.guardarTabla(tablaActiva); // Sincronizar a disco
             long total = System.nanoTime() - start;
             terminalOutput
-                    .append(String.format("⏱️ Tiempo total de inserción y guardado: %.2f ms\n\n", total / 1_000_000.0));
+                    .append(String.format(" Tiempo total de inserción y guardado: %.2f ms\n\n", total / 1_000_000.0));
             actualizarVisualizacion();
         } catch (Exception e) {
-            terminalOutput.append("❌ Error en Dataset: " + e.getMessage() + "\n");
+            terminalOutput.append(" Error en Dataset: " + e.getMessage() + "\n");
         }
     }
 
@@ -421,9 +422,9 @@ public class VentanaPrincipal extends JFrame {
                 db.registrarTabla(nueva);
                 pers.guardarTabla(nueva);
                 refrescarTablas();
-                terminalOutput.append("✔️ Tabla '" + nueva.getNombre() + "' vaciada con éxito.\n");
+                terminalOutput.append(" Tabla '" + nueva.getNombre() + "' vaciada con éxito.\n");
             } catch (Exception e) {
-                terminalOutput.append("❌ Error al limpiar: " + e.getMessage() + "\n");
+                terminalOutput.append(" Error al limpiar: " + e.getMessage() + "\n");
             }
         }
     }
@@ -467,7 +468,7 @@ public class VentanaPrincipal extends JFrame {
             }
 
         } catch (Exception e) {
-            terminalOutput.append("❌ ERROR: " + e.getMessage() + "\n\n");
+            terminalOutput.append("ERROR: " + e.getMessage() + "\n\n");
         }
     }
 }

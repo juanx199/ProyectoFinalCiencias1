@@ -5,10 +5,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Representa una tabla en memoria.
- * Contiene metadatos de esquema, nombre y el índice del árbol AVL.
- */
+// Representa una tabla en memoria.
+// Contiene metadatos de esquema, nombre y el índice del árbol AVL.
+
 public class Tabla {
     private final String nombre;
     private final LinkedHashMap<String, TipoDato> esquema;
@@ -19,15 +18,17 @@ public class Tabla {
         this.nombre = nombre;
         this.esquema = esquema;
         this.clavePrimaria = clavePrimaria;
-        
+
         // Verificar que la clave primaria exista en el esquema y sea INT
         if (!esquema.containsKey(clavePrimaria)) {
-            throw new IllegalArgumentException("La columna PK '" + clavePrimaria + "' no existe en el esquema de la tabla.");
+            throw new IllegalArgumentException(
+                    "La columna PK '" + clavePrimaria + "' no existe en el esquema de la tabla.");
         }
         if (esquema.get(clavePrimaria) != TipoDato.INT) {
-            throw new IllegalArgumentException("La clave primaria de la tabla debe ser estrictamente de tipo entero (INT).");
+            throw new IllegalArgumentException(
+                    "La clave primaria de la tabla debe ser estrictamente de tipo entero (INT).");
         }
-        
+
         this.indice = new ArbolAVL<>();
     }
 
@@ -47,15 +48,15 @@ public class Tabla {
         return indice;
     }
 
-    /**
-     * Valida e inserta un registro en la tabla.
-     * Realiza verificaciones rigurosas de tipo de datos de acuerdo al esquema.
-     */
+    // Valida e inserta un registro en la tabla.
+    // Realiza verificaciones rigurosas de tipo de datos de acuerdo al esquema.
+
     public void insertar(Registro registro) {
         // 1. Validar que la clave primaria no sea nula
         Object pkValRaw = registro.get(clavePrimaria);
         if (pkValRaw == null) {
-            throw new IllegalArgumentException("El valor de la clave primaria '" + clavePrimaria + "' no puede ser nulo.");
+            throw new IllegalArgumentException(
+                    "El valor de la clave primaria '" + clavePrimaria + "' no puede ser nulo.");
         }
 
         // 2. Validar tipos de datos del registro contra el esquema
@@ -65,7 +66,8 @@ public class Tabla {
             Object value = registro.get(colName);
 
             if (value != null) {
-                // Si el valor no coincide con el tipo esperado, intentar parsearlo o verificar compatibilidad
+                // Si el valor no coincide con el tipo esperado, intentar parsearlo o verificar
+                // compatibilidad
                 try {
                     Object parsedVal = type.parsear(value.toString());
                     registro.set(colName, parsedVal);
@@ -89,6 +91,7 @@ public class Tabla {
 
     /**
      * Elimina un registro por clave primaria.
+     * 
      * @return true si el registro existía y fue eliminado, false de lo contrario.
      */
     public boolean eliminar(Integer pk) {
@@ -99,23 +102,22 @@ public class Tabla {
         return false;
     }
 
-    /**
-     * Busca un registro por su clave primaria en O(log n).
-     */
+    // Busca un registro por su clave primaria en O(log n).
+
     public Registro buscar(Integer pk) {
         return indice.search(pk);
     }
 
-    /**
-     * Realiza una búsqueda por rango inclusivo [minVal, maxVal] de la clave primaria.
-     */
+    // Realiza una búsqueda por rango inclusivo [minVal, maxVal] de la clave
+    // primaria.
+
     public List<Registro> buscarRango(Integer minVal, Integer maxVal) {
         return indice.searchRange(minVal, maxVal);
     }
 
-    /**
-     * Retorna todos los registros de la tabla ordenados secuencialmente por clave primaria.
-     */
+    // Retorna todos los registros de la tabla ordenados secuencialmente por clave
+    // primaria.
+
     public List<Registro> obtenerTodos() {
         return indice.inorder();
     }

@@ -43,7 +43,15 @@ public class ParserSQL {
             return ResultadoQuery.vacio("Comando vacío.");
         }
 
-        String comando = sql.trim().replaceAll("\\s+", " ");
+        String cleanedSql = sql.trim();
+        // Limpiar prefijos de prompt comunes por si el usuario los copia o digita por error
+        if (cleanedSql.toLowerCase().startsWith("sql>")) {
+            cleanedSql = cleanedSql.substring(4).trim();
+        } else if (cleanedSql.toLowerCase().startsWith("avl-db>")) {
+            cleanedSql = cleanedSql.substring(7).trim();
+        }
+
+        String comando = cleanedSql.replaceAll("\\s+", " ");
         // Quitar punto y coma al final si existe
         if (comando.endsWith(";")) {
             comando = comando.substring(0, comando.length() - 1).trim();

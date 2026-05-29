@@ -38,13 +38,13 @@ public class InterpreteREPL {
                 }
                 input = scanner.nextLine().trim();
             } catch (Exception e) {
-                System.out.println("⚠️ Error al leer entrada.");
+                System.out.println(" Error al leer entrada.");
                 break;
             }
 
             if (input.equalsIgnoreCase("exit") || input.equalsIgnoreCase("quit") || input.equalsIgnoreCase("exit;")
                     || input.equalsIgnoreCase("quit;")) {
-                System.out.println("\n👋 Cerrando motor de base de datos. ¡Hasta luego!");
+                System.out.println("\nCerrando motor de base de datos. ¡Hasta luego!");
                 break;
             }
 
@@ -78,7 +78,7 @@ public class InterpreteREPL {
                 imprimirResultado(resultado, elapsed);
 
             } catch (Exception e) {
-                System.out.println("❌ ERROR: " + e.getMessage());
+                System.out.println("ERROR: " + e.getMessage());
             }
             System.out.println();
         }
@@ -88,7 +88,7 @@ public class InterpreteREPL {
 
     public static void imprimirResultado(ResultadoQuery res, long elapsedNanoseconds) {
         if (res.getMensaje() != null && !res.tieneFilas()) {
-            System.out.println("✔️ Confirmación: " + res.getMensaje());
+            System.out.println(" Confirmación: " + res.getMensaje());
             System.out.printf("   [Tiempo: %.2f ms]\n", elapsedNanoseconds / 1_000_000.0);
             return;
         }
@@ -116,7 +116,7 @@ public class InterpreteREPL {
             }
         }
 
-        // 2. Construir borde horizontal (+----+--------+)
+        // 2. borde horizontal (+----+--------+)
         StringBuilder bordeHorizontal = new StringBuilder("+");
         for (String col : esquema.keySet()) {
             int ancho = anchos.get(col) + 2;
@@ -134,7 +134,6 @@ public class InterpreteREPL {
         }
         System.out.println(cabecera);
 
-        // Imprimir Separador
         System.out.println(bordeHorizontal);
 
         // 4. Imprimir Filas
@@ -149,7 +148,7 @@ public class InterpreteREPL {
             System.out.println(fila);
         }
 
-        // Imprimir Borde Inferior
+        // Borde Inferior
         System.out.println(bordeHorizontal);
 
         // Imprimir Estadísticas y Métricas

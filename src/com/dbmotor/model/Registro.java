@@ -3,10 +3,9 @@ package com.dbmotor.model;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * Encapsula un registro o fila dentro de una tabla.
- * Mantiene un mapeo interno de nombre de columna -> valor.
- */
+// Encapsula un registro o fila dentro de una tabla.
+// Mantiene un mapeo interno de nombre de columna -> valor.
+
 public class Registro {
     private final Map<String, Object> valores;
 

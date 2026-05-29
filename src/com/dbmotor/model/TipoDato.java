@@ -1,8 +1,7 @@
 package com.dbmotor.model;
 
-/**
- * Enumeración que representa los tipos de datos soportados por el motor de base de datos.
- */
+//Enumeración que representa los tipos de datos soportados por el motor de base de datos.
+
 public enum TipoDato {
     INT,
     TEXT,
@@ -11,17 +10,19 @@ public enum TipoDato {
 
     /**
      * Valida y parsea un valor de texto al tipo de dato correspondiente en Java.
+     * 
      * @param valorTexto El valor como cadena.
      * @return El objeto Java correspondiente (Integer, String, Double, Boolean).
-     * @throws IllegalArgumentException si el formato de texto no es válido para el tipo.
+     * @throws IllegalArgumentException si el formato de texto no es válido para el
+     *                                  tipo.
      */
     public Object parsear(String valorTexto) {
         if (valorTexto == null || valorTexto.trim().equalsIgnoreCase("NULL")) {
             return null;
         }
-        
+
         String cleanVal = valorTexto.trim();
-        
+
         switch (this) {
             case INT:
                 try {

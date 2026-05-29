@@ -3,10 +3,8 @@ package com.dbmotor.core;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Implementación propia del Árbol AVL auto-balanceado.
- * Indexa registros utilizando claves de tipo Integer.
- */
+//Implementación propia del Árbol AVL auto-balanceado.
+//Indexa registros utilizando claves de tipo Integer.
 public class ArbolAVL<V> {
     private NodoAVL<V> root;
 
@@ -64,7 +62,8 @@ public class ArbolAVL<V> {
 
     /**
      * Inserta una nueva clave y su valor asociado en el árbol.
-     * @throws IllegalArgumentException si la clave ya existe (violación de clave primaria).
+     * // @throws IllegalArgumentException si la clave ya existe (violación de clave
+     * primaria).
      */
     public void insert(Integer key, V value) {
         this.root = insert(this.root, key, value);
@@ -82,7 +81,8 @@ public class ArbolAVL<V> {
             node.right = insert(node.right, key, value);
         } else {
             // Clave duplicada encontrada
-            throw new IllegalArgumentException("Violación de restricción de clave primaria única: La clave " + key + " ya existe.");
+            throw new IllegalArgumentException(
+                    "Violación de restricción de clave primaria única: La clave " + key + " ya existe.");
         }
 
         // 2. Actualizar la altura de este nodo ancestro
@@ -117,9 +117,8 @@ public class ArbolAVL<V> {
         return node;
     }
 
-    /**
-     * Elimina un nodo del árbol dada su clave.
-     */
+    // Elimina un nodo del árbol dada su clave.
+
     public void delete(Integer key) {
         this.root = delete(this.root, key);
     }
@@ -204,9 +203,7 @@ public class ArbolAVL<V> {
         return current;
     }
 
-    /**
-     * Busca el valor correspondiente a una clave en O(log n).
-     */
+    // Busca el valor correspondiente a una clave en O(log n).
     public V search(Integer key) {
         NodoAVL<V> result = search(this.root, key);
         return (result == null) ? null : result.value;
@@ -222,9 +219,8 @@ public class ArbolAVL<V> {
         return search(node.right, key);
     }
 
-    /**
-     * Retorna todos los valores del árbol ordenados por clave (Inorder completo).
-     */
+    // Retorna todos los valores del árbol ordenados por clave (Inorder completo).
+
     public List<V> inorder() {
         List<V> result = new ArrayList<>();
         inorder(this.root, result);
@@ -240,7 +236,8 @@ public class ArbolAVL<V> {
     }
 
     /**
-     * Retorna los valores del árbol que estén dentro de un rango inclusivo [lower, upper].
+     * Retorna los valores del árbol que estén dentro de un rango inclusivo [lower,
+     * upper].
      * Utiliza un recorrido inorden acotado eficiente en O(log n + m).
      */
     public List<V> searchRange(Integer lower, Integer upper) {
@@ -250,9 +247,11 @@ public class ArbolAVL<V> {
     }
 
     private void searchRange(NodoAVL<V> node, Integer lower, Integer upper, List<V> result) {
-        if (node == null) return;
+        if (node == null)
+            return;
 
-        // Si el valor del nodo es mayor que el límite inferior, explorar el subárbol izquierdo
+        // Si el valor del nodo es mayor que el límite inferior, explorar el subárbol
+        // izquierdo
         if (lower == null || node.key >= lower) {
             searchRange(node.left, lower, upper, result);
         }
@@ -262,14 +261,16 @@ public class ArbolAVL<V> {
             result.add(node.value);
         }
 
-        // Si el valor del nodo es menor que el límite superior, explorar el subárbol derecho
+        // Si el valor del nodo es menor que el límite superior, explorar el subárbol
+        // derecho
         if (upper == null || node.key <= upper) {
             searchRange(node.right, lower, upper, result);
         }
     }
 
     /**
-     * Valida recursivamente si todo el árbol cumple la propiedad de balanceo AVL (factor en [-1, 1]).
+     * Valida recursivamente si todo el árbol cumple la propiedad de balanceo AVL
+     * (factor en [-1, 1]).
      * Método de utilidad para las pruebas unitarias y de estrés.
      */
     public boolean verifyBalance() {
@@ -277,7 +278,8 @@ public class ArbolAVL<V> {
     }
 
     private boolean verifyBalance(NodoAVL<V> node) {
-        if (node == null) return true;
+        if (node == null)
+            return true;
         int balance = getBalance(node);
         if (balance < -1 || balance > 1) {
             return false;
