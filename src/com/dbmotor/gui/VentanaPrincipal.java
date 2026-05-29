@@ -120,10 +120,10 @@ public class VentanaPrincipal extends JFrame {
         JButton btnDataset50 = new JButton("⚡ Cargar Dataset Pequeño (50)");
         btnDataset50.addActionListener(e -> generarDataset(50));
 
-        JButton btnDataset5000 = new JButton("🔥 Cargar Dataset Grande (5000+)");
-        btnDataset5000.addActionListener(e -> generarDataset(5000));
+        JButton btnDataset1000 = new JButton(" Cargar Dataset Grande (1000+)");
+        btnDataset1000.addActionListener(e -> generarDataset(1000));
 
-        JButton btnLimpiar = new JButton("🧹 Limpiar Tabla Activa");
+        JButton btnLimpiar = new JButton(" Limpiar Tabla Activa");
         btnLimpiar.addActionListener(e -> limpiarTablaActiva());
 
         JButton btnActualizar = new JButton("🔄 Recargar Árbol");
@@ -134,7 +134,7 @@ public class VentanaPrincipal extends JFrame {
         panelAtajos.add(btnEliminar);
         panelAtajos.add(btnBuscar);
         panelAtajos.add(btnDataset50);
-        panelAtajos.add(btnDataset5000);
+        panelAtajos.add(btnDataset1000);
         panelAtajos.add(btnLimpiar);
         panelAtajos.add(btnActualizar);
 
@@ -286,13 +286,16 @@ public class VentanaPrincipal extends JFrame {
                 }
                 TipoDato tipo = tablaActiva.getEsquema().get(col);
                 if (tipo == TipoDato.TEXT) {
-                    queryB.append(", 'RandText'");
+                    String[] randTexts = { "Alfa", "Beta", "Gamma", "Delta", "Omega", "Sigma", "Zeta", "Epsilon" };
+                    String randomText = randTexts[random.nextInt(randTexts.length)] + "_" + random.nextInt(100);
+                    queryB.append(", '").append(randomText).append("'");
                 } else if (tipo == TipoDato.INT) {
-                    queryB.append(", 1");
+                    queryB.append(", ").append(random.nextInt(500) + 1);
                 } else if (tipo == TipoDato.REAL) {
-                    queryB.append(", 1.0");
+                    double randReal = Math.round((random.nextDouble() * 500.0) * 100.0) / 100.0;
+                    queryB.append(String.format(java.util.Locale.US, ", %.2f", randReal));
                 } else if (tipo == TipoDato.BOOLEAN) {
-                    queryB.append(", true");
+                    queryB.append(", ").append(random.nextBoolean());
                 }
             }
             queryB.append(");");
@@ -389,8 +392,9 @@ public class VentanaPrincipal extends JFrame {
                 terminalOutput
                         .append("Dataset de 50 registros cargado. El Árbol AVL ha sido balanceado en memoria.\n");
             } else {
-                GeneradorDatasets.generarEInsertar(tablaActiva, 5000);
-                terminalOutput.append(" Dataset mediano de 5,000+ registros cargado en memoria exitosamente.\n");
+                GeneradorDatasets.generarEInsertar(tablaActiva, cantidad);
+                terminalOutput
+                        .append(" Dataset grande de " + cantidad + "+ registros cargado en memoria exitosamente.\n");
 
                 // Ejecutar benchmark comparativo
                 terminalOutput.append(" Iniciando Benchmark Comparativo de Búsqueda:\n");

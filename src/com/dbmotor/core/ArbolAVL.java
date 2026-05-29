@@ -147,15 +147,15 @@ public class ArbolAVL<V> {
                     node = temp;
                 }
             } else {
-                // Caso: 2 hijos. Obtener el sucesor en inorden (mínimo del subárbol derecho)
-                NodoAVL<V> temp = obtenerMinimo(node.right);
+                // Caso: 2 hijos. Obtener el predecesor en inorden (nodo más a la derecha del subárbol izquierdo)
+                NodoAVL<V> temp = obtenerMaximo(node.left);
 
-                // Copiar los datos del sucesor al nodo actual
+                // Copiar los datos del predecesor al nodo actual
                 node.key = temp.key;
                 node.value = temp.value;
 
-                // Eliminar el sucesor
-                node.right = delete(node.right, temp.key);
+                // Eliminar el predecesor
+                node.left = delete(node.left, temp.key);
             }
         }
 
@@ -199,6 +199,14 @@ public class ArbolAVL<V> {
         NodoAVL<V> current = node;
         while (current.left != null) {
             current = current.left;
+        }
+        return current;
+    }
+
+    private NodoAVL<V> obtenerMaximo(NodoAVL<V> node) {
+        NodoAVL<V> current = node;
+        while (current.right != null) {
+            current = current.right;
         }
         return current;
     }
