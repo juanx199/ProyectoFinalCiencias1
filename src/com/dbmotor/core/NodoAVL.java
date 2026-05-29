@@ -1,9 +1,8 @@
 package com.dbmotor.core;
 
-/**
- * Clase que representa un nodo dentro de la estructura del Árbol AVL.
- * Sostiene una clave de tipo Integer (Clave Primaria) y un valor genérico.
- */
+// Clase que representa un nodo dentro de la estructura del Árbol
+// Sostiene una clave de tipo Integer (Clave Primaria) y un valor genérico
+
 public class NodoAVL<V> {
     public Integer key;
     public V value;
