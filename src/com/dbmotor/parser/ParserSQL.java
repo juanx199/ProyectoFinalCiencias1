@@ -611,6 +611,125 @@ public class ParserSQL {
         return ResultadoQuery.exito("Tabla '" + nombreTabla + "' borrada exitosamente de memoria y disco.");
     }
 
+    private ResultadoQuery ejecutarUpdate(String comando) throws Exception {
+        int idxSet = buscarSetFueraComillas(comando);
+        if (idxSet == -1) {
+            throw new IllegalArgumentException(
+                    "Sintaxis de UPDATE inválida. Falta la cláusula SET (ej: UPDATE tabla SET col = val WHERE ...).");
+        }
+
+        String nombreTabla = comando.substring(6, idxSet).trim();
+        Tabla t = db.obtenerTabla(nombreTabla);
+        if (t == null) {
+            throw new IllegalArgumentException("La tabla '" + nombreTabla + "' no existe.");
+        }
+
+        String rest = comando.substring(idxSet + 3).trim();
+
+        int idxWhere = buscarWhereFueraComillas(rest);
+        if (idxWhere == -1) {
+            throw new IllegalArgumentException(
+                    "Sintaxis de UPDATE inválida. La cláusula WHERE es obligatoria para actualizar registros.");
+        }
+
+        String setRaw = rest.substring(0, idxWhere).trim();
+        String whereRaw = rest.substring(idxWhere + 5).trim();
+
+        Matcher mExact = Pattern.compile("^(\\w+)\\s*=\\s*(.+)$", Pattern.CASE_INSENSITIVE).matcher(whereRaw);
+        if (!mExact.matches()) {
+            throw new IllegalArgumentException(
+                    "UPDATE solo soporta comparación exacta '=' en el WHERE (ej: WHERE id = 5).");
+        }
+
+        String colCriterio = mExact.group(1);
+        String valCriterioRaw = mExact.group(2).trim();
+
+        if (!t.getEsquema().containsKey(colCriterio)) {
+            throw new IllegalArgumentException("La columna del WHERE '" + colCriterio + "' no existe en el esquema.");
+        }
+
+        List<String> asignaciones = dividirPorComasFueraComillas(setRaw);
+        Map<String, Object> nuevosValores = new LinkedHashMap<>();
+
+        for (String asignacion : asignaciones) {
+            String[] partes = dividirAsignacion(asignacion);
+            String colName = partes[0];
+            String valRaw = partes[1];
+
+            TipoDato tipo = t.getEsquema().get(colName);
+            if (tipo == null) {
+                throw new IllegalArgumentException("La columna '" + colName + "' no existe en el esquema.");
+            }
+
+            if (colName.equalsIgnoreCase(t.getClavePrimaria())) {
+                throw new IllegalArgumentException("No está permitido actualizar la clave primaria '" + colName + "'.");
+            }
+
+            String valLimpio = quitarComillas(valRaw);
+            try {
+                Object valParsed = tipo.parsear(valLimpio);
+                nuevosValores.put(colName, valParsed);
+            } catch (Exception e) {
+                throw new IllegalArgumentException(
+                        "Error de tipo al asignar '" + valRaw + "' a la columna '" + colName + "': " + e.getMessage());
+            }
+        }
+
+        List<Registro> matched = new ArrayList<>();
+        String metricaBusqueda = "Escanear lineal O(N)";
+
+        if (colCriterio.equalsIgnoreCase(t.getClavePrimaria())) {
+            Integer pkVal = Integer.parseInt(valCriterioRaw);
+            Registro r = t.buscar(pkVal);
+            if (r != null) {
+                matched.add(r);
+            }
+            metricaBusqueda = "Búsqueda exacta indexada en AVL O(log N)";
+        } else {
+            TipoDato tipo = t.getEsquema().get(colCriterio);
+            Object targetVal = tipo.parsear(quitarComillas(valCriterioRaw));
+            for (Registro r : t.obtenerTodos()) {
+                Object valReg = r.get(colCriterio);
+                if (valReg != null && valReg.equals(targetVal)) {
+                    matched.add(r);
+                }
+            }
+        }
+
+        if (matched.isEmpty()) {
+            ResultadoQuery res = ResultadoQuery.exito("Actualizados 0 registros correctamente.");
+            res.setMetricaRendimiento(metricaBusqueda);
+            return res;
+        }
+
+        List<Map<String, Object>> backup = new ArrayList<>();
+        for (Registro reg : matched) {
+            backup.add(new HashMap<>(reg.getValores()));
+        }
+
+        for (Registro reg : matched) {
+            for (Map.Entry<String, Object> entry : nuevosValores.entrySet()) {
+                reg.set(entry.getKey(), entry.getValue());
+            }
+        }
+
+        try {
+            pers.guardarTabla(t);
+        } catch (IOException e) {
+            for (int i = 0; i < matched.size(); i++) {
+                Registro reg = matched.get(i);
+                Map<String, Object> oldValores = backup.get(i);
+                reg.getValores().clear();
+                reg.getValores().putAll(oldValores);
+            }
+            throw new IOException("Error crítico al persistir a disco. Transacción revertida en memoria. Causa: " + e.getMessage(), e);
+        }
+
+        ResultadoQuery res = ResultadoQuery.exito("Actualizados " + matched.size() + " registros correctamente.");
+        res.setMetricaRendimiento(metricaBusqueda);
+        return res;
+    }
+
       
     // --- Métodos auxiliares ---
 
@@ -705,6 +824,30 @@ public class ParserSQL {
     }
     return -1;
 }
+
+    private int buscarSetFueraComillas(String texto) {
+        boolean enComillaSimple = false;
+        boolean enComillaDoble = false;
+        int len = texto.length();
+
+        for (int i = 0; i < len; i++) {
+            char c = texto.charAt(i);
+            if (c == '\'' && !enComillaDoble) {
+                enComillaSimple = !enComillaSimple;
+            } else if (c == '"' && !enComillaSimple) {
+                enComillaDoble = !enComillaDoble;
+            } else if (!enComillaSimple && !enComillaDoble) {
+                if (i + 3 <= len && texto.substring(i, i + 3).equalsIgnoreCase("SET")) {
+                    boolean limiteIzquierdo = (i == 0 || Character.isWhitespace(texto.charAt(i - 1)));
+                    boolean limiteDerecho = (i + 3 == len || Character.isWhitespace(texto.charAt(i + 3)));
+                    if (limiteIzquierdo && limiteDerecho) {
+                        return i;
+                    }
+                }
+            }
+        }
+        return -1;
+    }
 
     private List<String> dividirPorComasFueraComillas(String texto) {
         List<String> partes = new ArrayList<>();

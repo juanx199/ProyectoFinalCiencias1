@@ -169,12 +169,8 @@ public class VentanaPrincipal extends JFrame {
         inputCommand.setCaretColor(Color.WHITE);
         inputCommand.setFont(new Font("Courier New", Font.PLAIN, 12));
         inputCommand.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        inputCommand.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ejecutarComandoSQL();
-            }
-        });
+        inputCommand.addActionListener(e -> ejecutarComandoSQL());
+
 
         panelInput.add(promptLabel, BorderLayout.WEST);
         panelInput.add(inputCommand, BorderLayout.CENTER);
