@@ -171,7 +171,6 @@ public class VentanaPrincipal extends JFrame {
         inputCommand.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         inputCommand.addActionListener(e -> ejecutarComandoSQL());
 
-
         panelInput.add(promptLabel, BorderLayout.WEST);
         panelInput.add(inputCommand, BorderLayout.CENTER);
 
@@ -282,10 +281,11 @@ public class VentanaPrincipal extends JFrame {
                 }
                 TipoDato tipo = tablaActiva.getEsquema().get(col);
                 if (tipo == TipoDato.TEXT) {
-                    String[] randTexts = { "Alfa", "Beta", "Gamma", "Delta", "Omega", "Sigma", "Zeta", "Epsilon" };
+                    String[] randTexts = { "Felipe", "Pancracio", "Jenny", "Camilo", "Vanesa", "Julian", "David", "Epsilon" };
                     String randomText = randTexts[random.nextInt(randTexts.length)] + "_" + random.nextInt(100);
                     queryB.append(", '").append(randomText).append("'");
                 } else if (tipo == TipoDato.INT) {
+
                     queryB.append(", ").append(random.nextInt(500) + 1);
                 } else if (tipo == TipoDato.REAL) {
                     double randReal = Math.round((random.nextDouble() * 500.0) * 100.0) / 100.0;
