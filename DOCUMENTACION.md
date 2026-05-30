@@ -18,14 +18,8 @@ El **Motor de Base de Datos AVL** es un gestor de bases de datos relacionales (*
 
 El sistema está diseñado bajo un modelo modular desacoplado. A continuación se presenta la topología de interacción de sus componentes principales:
 
-```mermaid
-graph TD
-    UI[Interfaz Gráfica Swing / CLI REPL] -->|Consulta de texto| Parser[ParserSQL]
-    Parser -->|Valida sintaxis y tipos| Engine[BaseDatos & Tabla]
-    Engine -->|Indexación de PK en O(log N)| Index[Árbol AVL / Nodo AVL]
-    Engine -->|Persistencia y Garantía de Consistencia| Storage[GestorPersistencia]
-    Storage -->|Atomicidad vía .tmp| Disk[Archivos Físicos .csv]
-```
+<img width="511" height="553" alt="image" src="https://github.com/user-attachments/assets/39f04d97-3246-492c-8015-c437f967f2cf" />
+
 
 ### Componentes del Sistema
 
