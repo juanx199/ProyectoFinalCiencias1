@@ -1,6 +1,6 @@
 
 # Motor de Base de Datos Relacional Indexado por Árbol AVL
-## Documentación en archivo .md, esperamos no haya inconveniente profe.
+## Documentación en archivo "DOCUMENTACION.md", esperamos no haya inconveniente profe.
 
 Este proyecto es un motor de base de datos relacional ligero, desarrollado en Java, que utiliza una estructura de árbol AVL auto-balanceado para indexar registros y garantizar consultas en complejidad logarítmica $\mathcal{O}(\log n)$.
 
