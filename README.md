@@ -1,13 +1,13 @@
 
 # Motor de Base de Datos Relacional Indexado por Árbol AVL
 
-Este proyecto es un motor de base de datos relacional ligero, desarrollado desde cero en Java, que utiliza una estructura de **Árbol AVL auto-balanceado** propio para indexar registros y garantizar consultas ultrarrápidas en complejidad logarítmica $\mathcal{O}(\log n)$.
+Este proyecto es un motor de base de datos relacional ligero, desarrollado en Java, que utiliza una estructura de árbol AVL auto-balanceado para indexar registros y garantizar consultas en complejidad logarítmica $\mathcal{O}(\log n)$.
 
 Soporta comandos estándar de definición (DDL) y manipulación (DML) de datos a través de una interfaz de línea de comandos (REPL) y una interfaz gráfica de usuario interactiva (Swing GUI) que visualiza dinámicamente la topología del árbol en tiempo real.
 
 ---
 
-## 🛠️ Requisitos e Instalación
+## Requisitos e Instalación
 
 ### Requisitos Previos
 * **Java Development Kit (JDK) 22** o superior instalado.
@@ -21,12 +21,12 @@ javac -d bin src/com/dbmotor/core/*.java src/com/dbmotor/model/*.java src/com/db
 
 ---
 
-## 🚀 Ejecución del Motor
+## Ejecución del Motor
 
 El motor admite dos modos de arranque a través de la clase principal `com.dbmotor.Main`:
 
 ### 1. Modo Interfaz Gráfica (GUI) - Recomendado para Demo
-Lanza un panel de control interactivo en Swing con consola SQL integrada, controles rápidos de dataset y un visualizador gráfico dinámico del Árbol AVL:
+Lanza un panel de control interactivo en Swing con consola SQL integrada, controles rápidos de dataset y un visualizador gráfico dinámico del árbol AVL:
 ```powershell
 java -cp bin com.dbmotor.Main
 ```
@@ -39,25 +39,25 @@ java -cp bin com.dbmotor.Main -c
 
 ---
 
-## 🧪 Pruebas Unitarias e Integradas
+## Pruebas Unitarias e Integradas
 
 El proyecto cuenta con dos suites de verificación automatizada:
 
-1. **Pruebas Estructurales de Árbol AVL (`ArbolAVLTest`)**:
-   Valida el balance estricto, rotaciones e inserción/eliminación masiva (más de 10,000 elementos):
+1. **Pruebas Estructurales de árbol AVL (`ArbolAVLTest`)**:
+   Valida el balance estricto, rotaciones e inserción/eliminación masiva (más de 1,000 elementos):
    ```powershell
    java -cp bin com.dbmotor.core.ArbolAVLTest
    ```
 
 2. **Pruebas Integradas de Base de Datos (`DatabaseTest`)**:
-   Valida el flujo CRUD de tablas, integridad de tipos, protección de la PK y la **atomicidad transaccional con reversión (rollback)** en memoria ante fallos en disco:
+   Valida el flujo CRUD de tablas, integridad de tipos, protección de la PK y la atomicidad transaccional con reversión (rollback) en memoria ante fallos en disco:
    ```powershell
    java -cp bin com.dbmotor.core.DatabaseTest
    ```
 
 ---
 
-## 📜 Lenguaje de Consultas Soportado
+##  Lenguaje de Consultas Soportado
 
 El motor parsea de forma segura sentencias SQL-like, aislando comillas y caracteres especiales en cadenas de texto:
 
@@ -76,7 +76,7 @@ El motor parsea de forma segura sentencias SQL-like, aislando comillas y caracte
 
 ---
 
-## 🧱 Arquitectura del Sistema
+## Arquitectura del Sistema
 
 * **`com.dbmotor.core`**: Contiene la implementación del `ArbolAVL` auto-balanceado y sus nodos de almacenamiento genéricos, además de las suites de prueba.
 * **`com.dbmotor.model`**: Define las entidades relacionales básicas (`BaseDatos`, `Tabla`, `Registro` y la enumeración de validación de tipos `TipoDato`).
