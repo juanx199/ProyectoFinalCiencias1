@@ -192,7 +192,7 @@ A continuación se detalla cómo el motor gestiona de manera interna las operaci
 
 ## 7. Análisis de Complejidad Temporal
 
-El uso de un Árbol AVL sobre un escaneo secuencial lineal tradicional representa una optimización matemática drástica a medida que el conjunto de datos escala ($N \to \infty$).
+El uso de un Árbol AVL sobre un escaneo secuencial lineal tradicional representa una optimización matemática a medida que el conjunto de datos escala ($N \to \infty$).
 
 | Operación | Complejidad Temporal (AVL Indexado) | Complejidad Temporal (Escaneo Lineal) | Ventaja del AVL |
 | :--- | :--- | :--- | :--- |
@@ -208,7 +208,7 @@ El uso de un Árbol AVL sobre un escaneo secuencial lineal tradicional represent
 
 ## 8. Datasets de Prueba y Pruebas del Sistema
 
-El sistema dispone de un conjunto estructurado de datasets y suites de pruebas exhaustivas para demostrar la eficiencia, robustez y consistencia transaccional del motor.
+El sistema dispone de un conjunto estructurado de datasets y suites de pruebas para demostrar la eficiencia, robustez y consistencia transaccional del motor.
 
 ### 8.1. Datasets de Prueba y Scripts de Carga
 
@@ -251,8 +251,8 @@ Valida las operaciones de base de datos de extremo a extremo simulando un ciclo 
 
 ## 9. Conclusiones y Posibles Mejoras
 
-### Resultados y Aprendizajes
-* **Eficiencia del Balanceo:** Se comprobó mediante benchmarks empíricos que las búsquedas e inserciones en el AVL escalan perfectamente en $O(\log N)$, logrando ser cientos de veces más rápidas que un escaneo lineal en datasets de más de 1,000 registros.
+### Resultados 
+* **Eficiencia del Balanceo:** Se comprobó mediante benchmarks empíricos que las búsquedas e inserciones en el AVL escalan en $O(\log N)$, logrando ser cientos de veces más rápidas que un escaneo lineal en datasets de más de 1,000 registros.
 * **Consistencia:** El diseño atómico mediante archivos temporales `.tmp` y el rollback en memoria garantiza que el motor sea resiliente a fallos físicos de energía o espacio en disco.
 
 ### Posibles Mejoras del Sistema
@@ -312,4 +312,4 @@ Desde la terminal en el directorio raíz del proyecto:
   ```
 
 ---
-*Fin de la Documentación.*
+
